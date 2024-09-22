@@ -1,0 +1,9 @@
+// Static tasks configuration.
+//
+// Example:
+[
+  {
+    "label": "Deno Test",
+    "command": "deno test -A"
+  }
+]

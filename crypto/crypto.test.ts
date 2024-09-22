@@ -17,7 +17,7 @@ Deno.test("encode & decode keypair", async () => {
 Deno.test("sign & verify payload", async () => {
   const payload = { foo: "bar", baz: 123 };
   const signedPayload = await keypair.signPayload(payload);
-  const verifiedPayload = await keypair.publicIdentity.verifyPayload(
+  const verifiedPayload = await keypair.publicKey.verifyPayload(
     signedPayload,
   );
 
@@ -28,7 +28,7 @@ Deno.test("sign & verify payload with wrong keypair", async () => {
   const keypair2 = await BlahKeyPair.generate();
   const payload = { foo: "bar", baz: 123 };
   const signedPayload = await keypair.signPayload(payload);
-  expect(keypair2.publicIdentity.verifyPayload(signedPayload))
+  expect(keypair2.publicKey.verifyPayload(signedPayload))
     .rejects.toMatch(/sign/);
 });
 
@@ -39,12 +39,12 @@ Deno.test("sign & verify payload with wrong key order but should still work", as
     sig: signedPayload.sig,
     signee: {
       payload: { baz: 123, foo: "bar" },
-      user: signedPayload.signee.user,
+      id_key: signedPayload.signee.id_key,
       nonce: signedPayload.signee.nonce,
       timestamp: signedPayload.signee.timestamp,
     },
   };
-  const verifiedPayload = await keypair.publicIdentity.verifyPayload(
+  const verifiedPayload = await keypair.publicKey.verifyPayload(
     signedPayload2,
   );
   expect(verifiedPayload).toEqual(payload);

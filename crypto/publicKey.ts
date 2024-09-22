@@ -2,7 +2,7 @@ import canonicalize from "./canonicalize.ts";
 import type { BlahSignedPayload } from "./signedPayload.ts";
 import { bufToHex, hexToBuf } from "./utils.ts";
 
-export class BlahPublicIdentity {
+export class BlahPublicKey {
   private publicKey: CryptoKey;
   id: string;
   name: string;
@@ -16,13 +16,13 @@ export class BlahPublicIdentity {
 
   static async fromPublicKey(
     publicKey: CryptoKey,
-  ): Promise<BlahPublicIdentity> {
+  ): Promise<BlahPublicKey> {
     const rawKey = await crypto.subtle.exportKey("raw", publicKey);
     const id = bufToHex(rawKey);
-    return new BlahPublicIdentity(publicKey, id);
+    return new BlahPublicKey(publicKey, id);
   }
 
-  static async fromID(id: string): Promise<BlahPublicIdentity> {
+  static async fromID(id: string): Promise<BlahPublicKey> {
     const rawKey = hexToBuf(id);
     const publicKey = await crypto.subtle.importKey(
       "raw",
@@ -33,22 +33,23 @@ export class BlahPublicIdentity {
         "verify",
       ],
     );
-    return new BlahPublicIdentity(publicKey, id);
+    return new BlahPublicKey(publicKey, id);
   }
 
   static async verifyPayload<P>(
     signedPayload: BlahSignedPayload<P>,
-  ): Promise<{ payload: P; identity: BlahPublicIdentity }> {
+  ): Promise<{ payload: P; key: BlahPublicKey }> {
     const { signee } = signedPayload;
-    const identity = await BlahPublicIdentity.fromID(signee.user);
-    return { payload: await identity.verifyPayload(signedPayload), identity };
+    const key = await BlahPublicKey.fromID(signee.act_key ?? signee.id_key);
+    return { payload: await key.verifyPayload(signedPayload), key };
   }
 
   async verifyPayload<P>(signedPayload: BlahSignedPayload<P>): Promise<P> {
     const { sig, signee } = signedPayload;
-    if (signee.user !== this.id) {
+    const signingKey = signee.act_key ?? signee.id_key;
+    if (signingKey !== this.id) {
       throw new Error(
-        `Payload is not signed by this identity. Was signed by ${signee.user}.`,
+        `Payload is not signed by this identity. Was signed by ${signingKey}.`,
       );
     }
     const signeeBytes = new TextEncoder().encode(canonicalize(signee));

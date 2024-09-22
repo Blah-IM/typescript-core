@@ -2,7 +2,7 @@ export type BlahPayloadSignee<P> = {
   nonce: number;
   payload: P;
   timestamp: number;
-  user: string;
+  id_key: string;
   act_key?: string;
 };
 

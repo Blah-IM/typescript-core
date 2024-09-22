@@ -1,5 +1,5 @@
 import canonicalize from "./canonicalize.ts";
-import { BlahPublicIdentity } from "./publicIdentity.ts";
+import { BlahPublicKey } from "./publicKey.ts";
 import type { BlahPayloadSignee, BlahSignedPayload } from "./signedPayload.ts";
 import { bufToHex } from "./utils.ts";
 
@@ -10,21 +10,21 @@ export type EncodedBlahKeyPair = {
 };
 
 export class BlahKeyPair {
-  publicIdentity: BlahPublicIdentity;
+  publicKey: BlahPublicKey;
   private privateKey: CryptoKey;
 
   get id() {
-    return this.publicIdentity.id;
+    return this.publicKey.id;
   }
   get name() {
-    return this.publicIdentity.name;
+    return this.publicKey.name;
   }
 
   private constructor(
-    publicIdentity: BlahPublicIdentity,
+    publicIdentity: BlahPublicKey,
     privateKey: CryptoKey,
   ) {
-    this.publicIdentity = publicIdentity;
+    this.publicKey = publicIdentity;
     this.privateKey = privateKey;
   }
 
@@ -37,7 +37,7 @@ export class BlahKeyPair {
         "verify",
       ],
     ) as CryptoKeyPair;
-    const publicIdentity = await BlahPublicIdentity.fromPublicKey(publicKey);
+    const publicIdentity = await BlahPublicKey.fromPublicKey(publicKey);
     return new BlahKeyPair(publicIdentity, privateKey);
   }
 
@@ -45,7 +45,7 @@ export class BlahKeyPair {
     if (encoded.v !== "0") {
       throw new Error("Unsupported version");
     }
-    const publicIdentity = await BlahPublicIdentity.fromID(encoded.id);
+    const publicIdentity = await BlahPublicKey.fromID(encoded.id);
     const privateKey = await crypto.subtle.importKey(
       "jwk",
       encoded.privateKey,
@@ -60,7 +60,7 @@ export class BlahKeyPair {
   async encode(): Promise<EncodedBlahKeyPair> {
     return {
       v: "0",
-      id: this.publicIdentity.id,
+      id: this.publicKey.id,
       privateKey: await crypto.subtle.exportKey("jwk", this.privateKey),
     };
   }
@@ -68,6 +68,7 @@ export class BlahKeyPair {
   async signPayload<P>(
     payload: P,
     date: Date = new Date(),
+    identityKeyId?: string,
   ): Promise<BlahSignedPayload<P>> {
     const nonceBuf = new Uint32Array(1);
     crypto.getRandomValues(nonceBuf);
@@ -78,8 +79,12 @@ export class BlahKeyPair {
       nonce: nonceBuf[0],
       payload,
       timestamp,
-      user: this.id,
+      id_key: identityKeyId ?? this.id,
     };
+    if (identityKeyId) {
+      signee.act_key = this.id;
+    }
+
     const signeeBytes = new TextEncoder().encode(canonicalize(signee));
 
     const rawSig = await crypto.subtle.sign(
