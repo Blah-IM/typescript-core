@@ -1,6 +1,7 @@
 {
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-    "@std/expect": "jsr:@std/expect@^1.0.3"
+    "@std/expect": "jsr:@std/expect@^1.0.3",
+    "zod": "https://deno.land/x/zod@v3.23.8/mod.ts"
   }
 }
