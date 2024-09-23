@@ -1,4 +1,10 @@
 {
+  "name": "@blah/core",
+  "version": "0.1.0",
+  "exports": {
+    "./crypto": "./crypto/mod.ts",
+    "./identity": "./identity/mod.ts"
+  },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@std/expect": "jsr:@std/expect@^1.0.3",
