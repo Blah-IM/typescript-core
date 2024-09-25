@@ -13,10 +13,10 @@ export class BlahKeyPair {
   publicKey: BlahPublicKey;
   private privateKey: CryptoKey;
 
-  get id() {
+  get id(): string {
     return this.publicKey.id;
   }
-  get name() {
+  get name(): string {
     return this.publicKey.name;
   }
 

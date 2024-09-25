@@ -8,5 +8,10 @@ export const blahProfileSchema = z.object({
   bio: z.string().optional(),
 });
 
-export type BlahProfile = z.input<typeof blahProfileSchema>;
-export type BlahParsedProfile = z.infer<typeof blahProfileSchema>;
+export type BlahProfile = {
+  typ: "profile";
+  preferred_chat_server_urls: string[];
+  id_urls: string[];
+  name: string;
+  bio?: string;
+};

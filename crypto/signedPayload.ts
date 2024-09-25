@@ -17,10 +17,15 @@ export function blahSignedPayloadSchemaOf<P extends z.ZodTypeAny>(schema: P) {
   });
 }
 
-export type BlahPayloadSignee<P extends z.ZodTypeAny> = z.infer<
-  ReturnType<typeof blahPayloadSigneeSchemaOf<P>>
->;
+export type BlahPayloadSignee<P> = {
+  nonce: number;
+  payload: P;
+  timestamp: number;
+  id_key: string;
+  act_key?: string;
+};
 
-export type BlahSignedPayload<P extends z.ZodTypeAny> = z.infer<
-  ReturnType<typeof blahSignedPayloadSchemaOf<P>>
->;
+export type BlahSignedPayload<P> = {
+  sig: string;
+  signee: BlahPayloadSignee<P>;
+};

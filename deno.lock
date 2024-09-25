@@ -9,20 +9,26 @@
       "jsr:@std/assert@^0.223.0": "jsr:@std/assert@0.223.0",
       "jsr:@std/assert@^0.226.0": "jsr:@std/assert@0.226.0",
       "jsr:@std/assert@^1.0.5": "jsr:@std/assert@1.0.5",
+      "jsr:@std/assert@^1.0.6": "jsr:@std/assert@1.0.6",
       "jsr:@std/bytes@^0.223.0": "jsr:@std/bytes@0.223.0",
-      "jsr:@std/expect@^1.0.3": "jsr:@std/expect@1.0.3",
+      "jsr:@std/data-structures@^1.0.4": "jsr:@std/data-structures@1.0.4",
+      "jsr:@std/expect@^1.0.3": "jsr:@std/expect@1.0.4",
       "jsr:@std/fmt@1": "jsr:@std/fmt@1.0.2",
       "jsr:@std/fmt@^0.223": "jsr:@std/fmt@0.223.0",
-      "jsr:@std/fs@1": "jsr:@std/fs@1.0.3",
+      "jsr:@std/fs@1": "jsr:@std/fs@1.0.4",
       "jsr:@std/fs@^0.223": "jsr:@std/fs@0.223.0",
       "jsr:@std/fs@^0.229.3": "jsr:@std/fs@0.229.3",
+      "jsr:@std/fs@^1.0.4": "jsr:@std/fs@1.0.4",
       "jsr:@std/internal@^1.0.3": "jsr:@std/internal@1.0.3",
+      "jsr:@std/internal@^1.0.4": "jsr:@std/internal@1.0.4",
       "jsr:@std/io@^0.223": "jsr:@std/io@0.223.0",
       "jsr:@std/path@1": "jsr:@std/path@1.0.6",
       "jsr:@std/path@1.0.0-rc.1": "jsr:@std/path@1.0.0-rc.1",
       "jsr:@std/path@^0.223": "jsr:@std/path@0.223.0",
       "jsr:@std/path@^0.225.2": "jsr:@std/path@0.225.2",
       "jsr:@std/path@^1.0.4": "jsr:@std/path@1.0.6",
+      "jsr:@std/path@^1.0.6": "jsr:@std/path@1.0.6",
+      "jsr:@std/testing@^1.0.3": "jsr:@std/testing@1.0.3",
       "jsr:@ts-morph/bootstrap@^0.24.0": "jsr:@ts-morph/bootstrap@0.24.0",
       "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0"
     },
@@ -66,14 +72,30 @@
           "jsr:@std/internal@^1.0.3"
         ]
       },
+      "@std/assert@1.0.6": {
+        "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.4"
+        ]
+      },
       "@std/bytes@0.223.0": {
         "integrity": "84b75052cd8680942c397c2631318772b295019098f40aac5c36cead4cba51a8"
+      },
+      "@std/data-structures@1.0.4": {
+        "integrity": "fa0e20c11eb9ba673417450915c750a0001405a784e2a4e0c3725031681684a0"
       },
       "@std/expect@1.0.3": {
         "integrity": "d9cbd03323ef7feafd1e969ed85d5edb04ebbd9937b0fe7a52d5ff53be8e913a",
         "dependencies": [
           "jsr:@std/assert@^1.0.5",
           "jsr:@std/internal@^1.0.3"
+        ]
+      },
+      "@std/expect@1.0.4": {
+        "integrity": "97f68a445a9de0d9670200d2b7a19a7505a01b2cb390a983ba8d97d90ce30c4f",
+        "dependencies": [
+          "jsr:@std/assert@^1.0.6",
+          "jsr:@std/internal@^1.0.4"
         ]
       },
       "@std/fmt@0.223.0": {
@@ -97,8 +119,17 @@
           "jsr:@std/path@^1.0.4"
         ]
       },
+      "@std/fs@1.0.4": {
+        "integrity": "2907d32d8d1d9e540588fd5fe0ec21ee638134bd51df327ad4e443aaef07123c",
+        "dependencies": [
+          "jsr:@std/path@^1.0.6"
+        ]
+      },
       "@std/internal@1.0.3": {
         "integrity": "208e9b94a3d5649bd880e9ca38b885ab7651ab5b5303a56ed25de4755fb7b11e"
+      },
+      "@std/internal@1.0.4": {
+        "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
       },
       "@std/io@0.223.0": {
         "integrity": "2d8c3c2ab3a515619b90da2c6ff5ea7b75a94383259ef4d02116b228393f84f1",
@@ -124,6 +155,16 @@
       },
       "@std/path@1.0.6": {
         "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"
+      },
+      "@std/testing@1.0.3": {
+        "integrity": "f98c2bee53860a5916727d7e7d3abe920dd6f9edace022e2d059f00d05c2cf42",
+        "dependencies": [
+          "jsr:@std/assert@^1.0.6",
+          "jsr:@std/data-structures@^1.0.4",
+          "jsr:@std/fs@^1.0.4",
+          "jsr:@std/internal@^1.0.4",
+          "jsr:@std/path@^1.0.6"
+        ]
       },
       "@ts-morph/bootstrap@0.24.0": {
         "integrity": "a826a2ef7fa8a7c3f1042df2c034d20744d94da2ee32bf29275bcd4dffd3c060",
@@ -158,7 +199,8 @@
   "workspace": {
     "dependencies": [
       "jsr:@deno/dnt@^0.41.3",
-      "jsr:@std/expect@^1.0.3"
+      "jsr:@std/expect@^1.0.3",
+      "jsr:@std/testing@^1.0.3"
     ]
   }
 }

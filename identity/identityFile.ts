@@ -1,7 +1,8 @@
 import { z } from "zod";
-import { blahSignedPayloadSchemaOf } from "../crypto/mod.ts";
-import { blahActKeyRecordSchema } from "./actKey.ts";
-import { blahProfileSchema } from "./profile.ts";
+import { blahSignedPayloadSchemaOf } from "../crypto/signedPayload.ts";
+import { type BlahActKeyRecord, blahActKeyRecordSchema } from "./actKey.ts";
+import { type BlahProfile, blahProfileSchema } from "./profile.ts";
+import type { BlahSignedPayload } from "../crypto/mod.ts";
 
 export const blahIdentityFileSchema = z.object({
   id_key: z.string(),
@@ -9,5 +10,8 @@ export const blahIdentityFileSchema = z.object({
   profile: blahSignedPayloadSchemaOf(blahProfileSchema),
 });
 
-export type BlahIdentityFile = z.input<typeof blahIdentityFileSchema>;
-export type BlahParsedIdentityFile = z.infer<typeof blahIdentityFileSchema>;
+export type BlahIdentityFile = {
+  id_key: string;
+  act_keys: Array<BlahSignedPayload<BlahActKeyRecord>>;
+  profile: BlahSignedPayload<BlahProfile>;
+};

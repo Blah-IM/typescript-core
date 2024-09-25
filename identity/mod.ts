@@ -1,3 +1,3 @@
-export * from "./actKey.ts";
-export * from "./identityFile.ts";
-export * from "./profile.ts";
+export type { BlahActKeyRecord } from "./actKey.ts";
+export type { BlahIdentityFile } from "./identityFile.ts";
+export type { BlahProfile } from "./profile.ts";
