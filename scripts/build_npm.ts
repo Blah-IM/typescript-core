@@ -28,10 +28,10 @@ await build({
     license: "GPL-3.0-only",
     repository: {
       type: "git",
-      url: "git+https://github.com/blah-im/typescript-core.git",
+      url: "git+https://github.com/Blah-IM/typescript-core.git",
     },
     bugs: {
-      url: "https://github.com/blah-im/typescript-core/issues",
+      url: "https://github.com/Blah-IM/typescript-core/issues",
     },
   },
   postBuild() {
