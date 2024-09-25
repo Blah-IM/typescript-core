@@ -13,5 +13,9 @@
   },
   "tasks": {
     "build:npm": "deno run ./scripts/build_npm.ts"
+  },
+  "publish": {
+    "include": ["LICENSE", "README.md", "crypto", "identity"],
+    "exclude": ["**/*.test.ts"]
   }
 }
