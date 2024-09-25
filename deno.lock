@@ -30,7 +30,8 @@
       "jsr:@std/path@^1.0.6": "jsr:@std/path@1.0.6",
       "jsr:@std/testing@^1.0.3": "jsr:@std/testing@1.0.3",
       "jsr:@ts-morph/bootstrap@^0.24.0": "jsr:@ts-morph/bootstrap@0.24.0",
-      "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0"
+      "jsr:@ts-morph/common@^0.24.0": "jsr:@ts-morph/common@0.24.0",
+      "npm:zod@^3.23.8": "npm:zod@3.23.8"
     },
     "jsr": {
       "@david/code-block-writer@13.0.2": {
@@ -179,6 +180,12 @@
           "jsr:@std/path@^0.225.2"
         ]
       }
+    },
+    "npm": {
+      "zod@3.23.8": {
+        "integrity": "sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==",
+        "dependencies": {}
+      }
     }
   },
   "remote": {
@@ -200,7 +207,8 @@
     "dependencies": [
       "jsr:@deno/dnt@^0.41.3",
       "jsr:@std/expect@^1.0.3",
-      "jsr:@std/testing@^1.0.3"
+      "jsr:@std/testing@^1.0.3",
+      "npm:zod@^3.23.8"
     ]
   }
 }

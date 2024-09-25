@@ -9,7 +9,7 @@
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@std/expect": "jsr:@std/expect@^1.0.3",
     "@std/testing": "jsr:@std/testing@^1.0.3",
-    "zod": "https://deno.land/x/zod@v3.23.8/mod.ts"
+    "zod": "npm:zod@^3.23.8"
   },
   "tasks": {
     "build:npm": "deno run ./scripts/build_npm.ts"
