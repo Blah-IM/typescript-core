@@ -12,7 +12,7 @@
     "zod": "npm:zod@^3.23.8"
   },
   "tasks": {
-    "build:npm": "deno run ./scripts/build_npm.ts"
+    "build:npm": "deno run -A ./scripts/build_npm.ts"
   },
   "publish": {
     "include": ["LICENSE", "README.md", "crypto", "identity"],

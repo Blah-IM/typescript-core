@@ -1,18 +1,29 @@
 import { build, emptyDir } from "@deno/dnt";
+import denoJson from "../deno.json" with { type: "json" };
 
 await emptyDir("./npm");
 
 await build({
-  entryPoints: ["./mod.ts"],
+  entryPoints: [
+    { name: "./crypto", path: "crypto/mod.ts" },
+    { name: "./identity", path: "identity/mod.ts" },
+  ],
   outDir: "./npm",
+  importMap: "deno.json",
+  compilerOptions: {
+    lib: ["ESNext", "DOM"],
+  },
   shims: {
-    // see JS docs for overview and more options
-    deno: true,
+    deno: {
+      test: "dev",
+    },
+    crypto: true,
+    webSocket: true,
   },
   package: {
     // package.json properties
     name: "@blah-im/core",
-    version: Deno.args[0],
+    version: denoJson.version,
     description: "Core logic & types for Blah IM.",
     license: "GPL-3.0-only",
     repository: {
