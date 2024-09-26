@@ -6,7 +6,7 @@ export function blahPayloadSigneeSchemaOf<P extends z.ZodTypeAny>(schema: P) {
     payload: schema,
     timestamp: z.number().int(),
     id_key: z.string(),
-    act_key: z.string().optional(),
+    act_key: z.string(),
   });
 }
 
@@ -22,7 +22,7 @@ export type BlahPayloadSignee<P> = {
   payload: P;
   timestamp: number;
   id_key: string;
-  act_key?: string;
+  act_key: string;
 };
 
 export type BlahSignedPayload<P> = {

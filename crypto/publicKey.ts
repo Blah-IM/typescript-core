@@ -46,10 +46,10 @@ export class BlahPublicKey {
 
   async verifyPayload<P>(signedPayload: BlahSignedPayload<P>): Promise<P> {
     const { sig, signee } = signedPayload;
-    const signingKey = signee.act_key ?? signee.id_key;
+    const signingKey = signee.act_key;
     if (signingKey !== this.id) {
       throw new Error(
-        `Payload is not signed by this identity. Was signed by ${signingKey}.`,
+        `Payload is not signed by this public key. Was signed by ${signingKey}.`,
       );
     }
     const signeeBytes = new TextEncoder().encode(canonicalize(signee));

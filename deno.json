@@ -17,5 +17,8 @@
   "publish": {
     "include": ["LICENSE", "README.md", "crypto", "identity"],
     "exclude": ["**/*.test.ts"]
+  },
+  "test": {
+    "exclude": ["npm/"]
   }
 }

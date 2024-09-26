@@ -39,6 +39,7 @@ Deno.test("sign & verify payload with wrong key order but should still work", as
     sig: signedPayload.sig,
     signee: {
       payload: { baz: 123, foo: "bar" },
+      act_key: signedPayload.signee.act_key,
       id_key: signedPayload.signee.id_key,
       nonce: signedPayload.signee.nonce,
       timestamp: signedPayload.signee.timestamp,

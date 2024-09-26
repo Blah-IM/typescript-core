@@ -80,10 +80,8 @@ export class BlahKeyPair {
       payload,
       timestamp,
       id_key: identityKeyId ?? this.id,
+      act_key: this.id,
     };
-    if (identityKeyId) {
-      signee.act_key = this.id;
-    }
 
     const signeeBytes = new TextEncoder().encode(canonicalize(signee));
 
