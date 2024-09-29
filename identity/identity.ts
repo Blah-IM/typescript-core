@@ -5,7 +5,7 @@ import {
 } from "../crypto/mod.ts";
 import { type BlahActKeyRecord, blahActKeyRecordSchema } from "./actKey.ts";
 import { blahIdentityFileSchema } from "./identityFile.ts";
-import { BlahIdentityFile } from "./mod.ts";
+import type { BlahIdentityFile } from "./mod.ts";
 import type { BlahProfile } from "./profile.ts";
 
 type InternalActKey = {
