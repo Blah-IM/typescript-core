@@ -6,7 +6,7 @@ import type { BlahSignedPayload } from "../crypto/mod.ts";
 
 export const blahIdentityFileSchema = z.object({
   id_key: z.string(),
-  act_keys: z.array(blahSignedPayloadSchemaOf(blahActKeyRecordSchema)),
+  act_keys: z.array(blahSignedPayloadSchemaOf(blahActKeyRecordSchema)).min(1),
   profile: blahSignedPayloadSchemaOf(blahProfileSchema),
 });
 

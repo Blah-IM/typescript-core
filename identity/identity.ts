@@ -3,8 +3,9 @@ import {
   BlahPublicKey,
   type BlahSignedPayload,
 } from "../crypto/mod.ts";
-import type { BlahActKeyRecord } from "./actKey.ts";
+import { type BlahActKeyRecord, blahActKeyRecordSchema } from "./actKey.ts";
 import { blahIdentityFileSchema } from "./identityFile.ts";
+import { BlahIdentityFile } from "./mod.ts";
 import type { BlahProfile } from "./profile.ts";
 
 type InternalActKey = {
@@ -20,6 +21,8 @@ type ActKey = {
   sigValid: boolean;
   comment: string;
 };
+
+type ActKeyConfig = Partial<Omit<ActKey, "publicKey" | "sigValid">>;
 
 async function constructActKeyFromRaw(
   raw: BlahSignedPayload<BlahActKeyRecord>,
@@ -39,6 +42,39 @@ async function constructActKeyFromRaw(
   return { raw, key, expiresAt, sigValid };
 }
 
+async function constructInternalActKey(
+  idKeyPair: BlahKeyPair,
+  key: BlahPublicKey | BlahKeyPair,
+  config?: ActKeyConfig,
+): Promise<InternalActKey> {
+  const actKey: ActKey = {
+    publicKey: key instanceof BlahKeyPair ? key.publicKey : key,
+    expiresAt: new Date(Date.now() + 365 * 24 * 3600 * 1000),
+    sigValid: true,
+    comment: "",
+    ...config,
+  };
+
+  const rawRecord = await idKeyPair
+    .signPayload(blahActKeyRecordSchema.parse(
+      {
+        typ: "user_act_key",
+        expire_time: Math.floor(actKey.expiresAt.getTime() / 1000),
+        comment: actKey.comment,
+        act_key: actKey.publicKey.id,
+      } satisfies BlahActKeyRecord,
+    ));
+
+  const internalActKey: InternalActKey = {
+    raw: rawRecord,
+    key,
+    expiresAt: actKey.expiresAt,
+    sigValid: true,
+  };
+
+  return internalActKey;
+}
+
 export class BlahIdentity {
   private internalIdKey: BlahPublicKey | BlahKeyPair;
   private internalActKeys: InternalActKey[];
@@ -55,6 +91,10 @@ export class BlahIdentity {
     this.internalActKeys = internalActKeys;
     this.rawProfile = rawProfile;
     this.internalProfileSigValid = internalProfileSigValid;
+  }
+
+  get profileSigValid(): boolean {
+    return this.internalProfileSigValid;
   }
 
   get profile(): BlahProfile {
@@ -124,30 +164,13 @@ export class BlahIdentity {
     idKeyPair: BlahKeyPair,
     firstActKey: BlahKeyPair,
     profile: BlahProfile,
-    firstActKeyConfig: Partial<Omit<ActKey, "publicKey" | "sigValid">>,
+    firstActKeyConfig?: ActKeyConfig,
   ): Promise<BlahIdentity> {
-    const actKey: ActKey = {
-      publicKey: firstActKey.publicKey,
-      expiresAt: new Date(Date.now() + 365 * 24 * 3600 * 1000),
-      sigValid: true,
-      comment: "",
-      ...firstActKeyConfig,
-    };
-
-    const actKeyRecord: BlahSignedPayload<BlahActKeyRecord> = await idKeyPair
-      .signPayload({
-        typ: "user_act_key",
-        expire_time: actKey.expiresAt.getTime() / 1000,
-        comment: actKey.comment,
-        act_key: actKey.publicKey.id,
-      });
-
-    const internalActKey: InternalActKey = {
-      raw: actKeyRecord,
-      key: firstActKey,
-      expiresAt: actKey.expiresAt,
-      sigValid: true,
-    };
+    const internalActKey = await constructInternalActKey(
+      idKeyPair,
+      firstActKey,
+      firstActKeyConfig,
+    );
 
     const profileRecord: BlahSignedPayload<BlahProfile> = await firstActKey
       .signPayload(profile);
@@ -157,6 +180,52 @@ export class BlahIdentity {
       [internalActKey],
       profileRecord,
       true,
+    );
+  }
+
+  generateIdentityFile(): BlahIdentityFile {
+    return blahIdentityFileSchema.parse(
+      {
+        id_key: this.idPublicKey.id,
+        act_keys: this.internalActKeys.map((k) => (k.raw)),
+        profile: this.rawProfile,
+      } satisfies BlahIdentityFile,
+    );
+  }
+
+  async addActKey(actKey: BlahKeyPair | BlahPublicKey, config?: ActKeyConfig) {
+    if (this.internalIdKey instanceof BlahPublicKey) {
+      throw new Error("Cannot add act key to identity without ID key pair.");
+    }
+
+    const internalActKey = await constructInternalActKey(
+      this.internalIdKey,
+      actKey,
+      config,
+    );
+
+    this.internalActKeys.push(internalActKey);
+  }
+
+  async updateActKey(
+    keyId: string,
+    config: ActKeyConfig,
+  ) {
+    if (this.internalIdKey instanceof BlahPublicKey) {
+      throw new Error("Cannot update act key in identity without ID key pair.");
+    }
+
+    const actKeyIndex = this.internalActKeys.findIndex(
+      (k) => k.key.id === keyId,
+    );
+    if (actKeyIndex === -1) {
+      throw new Error("Act key not found in identity.");
+    }
+
+    this.internalActKeys[actKeyIndex] = await constructInternalActKey(
+      this.internalIdKey,
+      this.internalActKeys[actKeyIndex].key,
+      config,
     );
   }
 }
