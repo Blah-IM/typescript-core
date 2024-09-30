@@ -74,6 +74,20 @@ Deno.test("update first act key", async () => {
   expect(record.comment).toBe("test2");
 });
 
+Deno.test("update profile", async () => {
+  const newProfile: BlahProfile = {
+    typ: "profile",
+    name: "Shibo Lyu",
+    preferred_chat_server_urls: ["https://example.com"],
+    id_urls: ["https://localhost:8080"],
+  };
+
+  await identity.updateProfile(newProfile);
+  identityFile = identity.generateIdentityFile();
+
+  expect(identityFile.profile.signee.payload).toEqual(newProfile);
+});
+
 Deno.test("throw when try writing to identity without id key pair", () => {
   expect(identityFromFile.updateActKey(actKeyPair.id, { comment: "test2" }))
     .rejects.toMatch(/key pair/i);

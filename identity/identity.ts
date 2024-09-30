@@ -228,4 +228,18 @@ export class BlahIdentity {
       config,
     );
   }
+
+  async updateProfile(profile: BlahProfile) {
+    const signingActKey = this.internalActKeys.find((k) =>
+      k.key instanceof BlahKeyPair
+    );
+    if (!signingActKey) {
+      throw new Error("No act key to sign profile with.");
+    }
+
+    this.rawProfile = await (signingActKey.key as BlahKeyPair).signPayload(
+      profile,
+    );
+    this.internalProfileSigValid = true;
+  }
 }
