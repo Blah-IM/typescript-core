@@ -31,7 +31,7 @@ async function constructActKeyFromRaw(
   const publicKey = idKey instanceof BlahKeyPair ? idKey.publicKey : idKey;
   let sigValid = false;
   try {
-    publicKey.verifyPayload(raw);
+    await publicKey.verifyPayload(raw);
     sigValid = true;
   } catch {
     sigValid = false;
@@ -151,7 +151,7 @@ export class BlahIdentity {
     }
     let profileSigValid = false;
     try {
-      profileSigningKey.verifyPayload(rawProfile);
+      await profileSigningKey.verifyPayload(rawProfile);
       profileSigValid = true;
     } catch {
       profileSigValid = false;

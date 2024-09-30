@@ -3,8 +3,8 @@ import { BlahKeyPair } from "../crypto/mod.ts";
 import { BlahIdentity } from "./identity.ts";
 import type { BlahIdentityFile, BlahProfile } from "./mod.ts";
 
-const idKeyPair = await BlahKeyPair.generate();
-const actKeyPair = await BlahKeyPair.generate();
+let idKeyPair: BlahKeyPair;
+let actKeyPair: BlahKeyPair;
 const profile: BlahProfile = {
   typ: "profile",
   name: "Shibo Lyu",
@@ -17,6 +17,8 @@ let identityFile: BlahIdentityFile;
 let identityFromFile: BlahIdentity;
 
 Deno.test("create identity", async () => {
+  idKeyPair = await BlahKeyPair.generate();
+  actKeyPair = await BlahKeyPair.generate();
   identity = await BlahIdentity.create(idKeyPair, actKeyPair, profile);
 });
 
@@ -46,6 +48,35 @@ Deno.test("created identity profile signed correctly", async () => {
 
 Deno.test("parse identity file", async () => {
   identityFromFile = await BlahIdentity.fromIdentityFile(identityFile);
+});
+
+Deno.test("identity file profile sigs are properly verfied", async () => {
+  const identityFileWithProfileInvalidProfileSig: BlahIdentityFile = {
+    ...identityFile,
+    profile: { ...identityFile.profile, sig: "_ obviously not a valid sig _" },
+  };
+  const identityWithProfileInvalidProfileSig = await BlahIdentity
+    .fromIdentityFile(
+      identityFileWithProfileInvalidProfileSig,
+    );
+  expect(identityWithProfileInvalidProfileSig.profileSigValid).toBe(false);
+});
+
+Deno.test("identity file act key sigs are properly verfied", async () => {
+  const identityFileWithActKeyInvalidActKeySig: BlahIdentityFile = {
+    ...identityFile,
+    act_keys: [
+      {
+        ...identityFile.act_keys[0],
+        sig: "_ obviously not a valid sig _",
+      },
+    ],
+  };
+  const identityWithActKeyInvalidActKeySig = await BlahIdentity
+    .fromIdentityFile(
+      identityFileWithActKeyInvalidActKeySig,
+    );
+  expect(identityWithActKeyInvalidActKeySig.actKeys[0].sigValid).toBe(false);
 });
 
 Deno.test("add a second act key", async () => {
