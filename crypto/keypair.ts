@@ -28,13 +28,17 @@ export class BlahKeyPair {
     this.privateKey = privateKey;
   }
 
-  static async generate(): Promise<BlahKeyPair> {
+  static async generate(
+    extractable: boolean = true,
+    additionalUsage: KeyUsage[] = [],
+  ): Promise<BlahKeyPair> {
     const { publicKey, privateKey } = await crypto.subtle.generateKey(
       "Ed25519",
-      true,
+      extractable,
       [
         "sign",
         "verify",
+        ...additionalUsage,
       ],
     ) as CryptoKeyPair;
     const publicIdentity = await BlahPublicKey.fromPublicKey(publicKey);
