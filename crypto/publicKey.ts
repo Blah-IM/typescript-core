@@ -29,9 +29,7 @@ export class BlahPublicKey {
       rawKey,
       { name: "Ed25519" },
       true,
-      [
-        "verify",
-      ],
+      ["verify"],
     );
     return new BlahPublicKey(publicKey, id);
   }

@@ -37,11 +37,8 @@ export class BlahKeyPair {
     return this.internalPrivateKey;
   }
 
-  private constructor(
-    publicIdentity: BlahPublicKey,
-    privateKey: CryptoKey,
-  ) {
-    this.internalPublicKey = publicIdentity;
+  constructor(publicKey: BlahPublicKey, privateKey: CryptoKey) {
+    this.internalPublicKey = publicKey;
     this.internalPrivateKey = privateKey;
   }
 
