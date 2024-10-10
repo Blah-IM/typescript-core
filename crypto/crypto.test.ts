@@ -14,6 +14,14 @@ Deno.test("encode & decode keypair", async () => {
   expect(decoded.id).toBe(keypair.id);
 });
 
+Deno.test("encode & decode keypair w/ password", async () => {
+  const password = "password";
+  const encoded = await keypair.encode(password);
+  const decoded = await BlahKeyPair.fromEncoded(encoded, password);
+
+  expect(decoded.id).toBe(keypair.id);
+});
+
 Deno.test("sign & verify payload", async () => {
   const payload = { foo: "bar", baz: 123 };
   const signedPayload = await keypair.signPayload(payload);
