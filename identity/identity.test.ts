@@ -33,7 +33,7 @@ Deno.test("created identity act key signed correctly", async () => {
   expect(record.typ).toBe("user_act_key");
   expect(record.expire_time).toBeGreaterThan(Date.now() / 1000);
   expect(record.comment).toBe("");
-  expect(record.act_key).toBe(actKeyPair.publicKey.id);
+  expect(record.act_key).toBe(actKeyPair.id);
 });
 
 Deno.test("created identity profile signed correctly", async () => {
@@ -91,7 +91,7 @@ Deno.test("add a second act key", async () => {
   expect(record.typ).toBe("user_act_key");
   expect(record.expire_time).toBeGreaterThan(Date.now() / 1000);
   expect(record.comment).toBe("test");
-  expect(record.act_key).toBe(actKeyPair2.publicKey.id);
+  expect(record.act_key).toBe(actKeyPair2.id);
 });
 
 Deno.test("update first act key", async () => {

@@ -19,22 +19,30 @@ export type EncodedBlahKeyPair =
   });
 
 export class BlahKeyPair {
-  publicKey: BlahPublicKey;
-  private privateKey: CryptoKey;
+  private internalPublicKey: BlahPublicKey;
+  private internalPrivateKey: CryptoKey;
 
   get id(): string {
-    return this.publicKey.id;
+    return this.internalPublicKey.id;
   }
   get name(): string {
-    return this.publicKey.name;
+    return this.internalPublicKey.name;
+  }
+
+  get publicKey(): BlahPublicKey {
+    return this.internalPublicKey;
+  }
+
+  get privateKey(): CryptoKey {
+    return this.internalPrivateKey;
   }
 
   private constructor(
     publicIdentity: BlahPublicKey,
     privateKey: CryptoKey,
   ) {
-    this.publicKey = publicIdentity;
-    this.privateKey = privateKey;
+    this.internalPublicKey = publicIdentity;
+    this.internalPrivateKey = privateKey;
   }
 
   static async generate(extractable: boolean = true): Promise<BlahKeyPair> {
@@ -91,7 +99,7 @@ export class BlahKeyPair {
   }
 
   async encode(password?: string): Promise<EncodedBlahKeyPair> {
-    if (!this.privateKey.extractable) {
+    if (!this.internalPrivateKey.extractable) {
       throw new Error("Private key is not extractable.");
     }
 
@@ -107,7 +115,7 @@ export class BlahKeyPair {
       const derviedKey = await pbkdf2Key(password, saltBuf);
       const wrappedPrivateKey = await crypto.subtle.wrapKey(
         "pkcs8",
-        this.privateKey,
+        this.internalPrivateKey,
         derviedKey,
         {
           name: "AES-GCM",
@@ -117,7 +125,7 @@ export class BlahKeyPair {
 
       return {
         v: "0",
-        id: this.publicKey.id,
+        id: this.internalPublicKey.id,
         passwordProtectedPrivateKey: bufToHex(wrappedPrivateKey),
         iv,
         salt,
@@ -125,8 +133,11 @@ export class BlahKeyPair {
     } else {
       return {
         v: "0",
-        id: this.publicKey.id,
-        privateKey: await crypto.subtle.exportKey("jwk", this.privateKey),
+        id: this.internalPublicKey.id,
+        privateKey: await crypto.subtle.exportKey(
+          "jwk",
+          this.internalPrivateKey,
+        ),
       };
     }
   }
@@ -153,7 +164,7 @@ export class BlahKeyPair {
 
     const rawSig = await crypto.subtle.sign(
       "Ed25519",
-      this.privateKey,
+      this.internalPrivateKey,
       signeeBytes,
     );
     return {
