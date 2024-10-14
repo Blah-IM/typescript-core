@@ -17,7 +17,7 @@ await build({
     deno: {
       test: "dev",
     },
-    crypto: true,
+    crypto: false,
     webSocket: true,
   },
   package: {
