@@ -1,5 +1,9 @@
+import type z from "zod";
 import canonicalize from "./canonicalize.ts";
-import type { BlahSignedPayload } from "./signedPayload.ts";
+import {
+  type BlahSignedPayload,
+  blahSignedPayloadSchemaOf,
+} from "./signedPayload.ts";
 import { bufToHex, hexToBuf } from "./utils.ts";
 
 export class BlahPublicKey {
@@ -40,6 +44,15 @@ export class BlahPublicKey {
     const { signee } = signedPayload;
     const key = await BlahPublicKey.fromID(signee.act_key ?? signee.id_key);
     return { payload: await key.verifyPayload(signedPayload), key };
+  }
+
+  static async parseAndVerifyPayload<P extends z.ZodTypeAny>(
+    schema: P,
+    signedPayload: unknown,
+  ): Promise<{ payload: P; key: BlahPublicKey }> {
+    const signedPayloadSchema = blahSignedPayloadSchemaOf(schema);
+    const parsed = signedPayloadSchema.parse(signedPayload);
+    return await BlahPublicKey.verifyPayload(parsed as BlahSignedPayload<P>);
   }
 
   async verifyPayload<P>(signedPayload: BlahSignedPayload<P>): Promise<P> {

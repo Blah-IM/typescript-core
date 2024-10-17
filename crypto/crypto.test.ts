@@ -1,5 +1,6 @@
 import { expect } from "@std/expect";
-import { BlahKeyPair } from "./mod.ts";
+import { BlahKeyPair, BlahPublicKey } from "./mod.ts";
+import z from "zod";
 
 let keypair: BlahKeyPair;
 
@@ -30,6 +31,38 @@ Deno.test("sign & verify payload", async () => {
   );
 
   expect(verifiedPayload).toEqual(payload);
+});
+
+Deno.test("parse and verify payload", async () => {
+  const payloadSchema = z.object({
+    foo: z.string(),
+    baz: z.number(),
+  }).strict();
+  const payload = { foo: "bar", baz: 123 };
+  const signedPayload = await keypair.signPayload(payload);
+  const { payload: verifiedPayload, key } = await BlahPublicKey
+    .parseAndVerifyPayload(
+      payloadSchema,
+      signedPayload,
+    );
+
+  expect(verifiedPayload).toEqual(payload);
+  expect(key.id).toBe(keypair.id);
+});
+
+Deno.test("parse and verify corrupted payload", async () => {
+  const payloadSchema = z.object({
+    foo: z.string(),
+    baz: z.number(),
+  }).strict();
+  const payload = { foo: "bar", baz: 123, qux: "quux" };
+  const signedPayload = await keypair.signPayload(payload);
+
+  expect(BlahPublicKey
+    .parseAndVerifyPayload(
+      payloadSchema,
+      signedPayload,
+    )).rejects.toMatch(/unrecognized/);
 });
 
 Deno.test("sign & verify payload with wrong keypair", async () => {
