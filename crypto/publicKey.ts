@@ -51,8 +51,8 @@ export class BlahPublicKey {
     signedPayload: unknown,
   ): Promise<{ payload: P; key: BlahPublicKey }> {
     const signedPayloadSchema = blahSignedPayloadSchemaOf(schema);
-    const parsed = signedPayloadSchema.parse(signedPayload);
-    return await BlahPublicKey.verifyPayload(parsed as BlahSignedPayload<P>);
+    const parsed = signedPayloadSchema.parse(signedPayload) as z.infer<P>;
+    return await BlahPublicKey.verifyPayload(parsed);
   }
 
   async verifyPayload<P>(signedPayload: BlahSignedPayload<P>): Promise<P> {
