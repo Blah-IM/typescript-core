@@ -49,7 +49,7 @@ export class BlahPublicKey {
   static async parseAndVerifyPayload<P extends z.ZodTypeAny>(
     schema: P,
     signedPayload: unknown,
-  ): Promise<{ payload: P; key: BlahPublicKey }> {
+  ): Promise<{ payload: z.infer<P>; key: BlahPublicKey }> {
     const signedPayloadSchema = blahSignedPayloadSchemaOf(schema);
     const parsed = signedPayloadSchema.parse(signedPayload) as z.infer<P>;
     return await BlahPublicKey.verifyPayload(parsed);
