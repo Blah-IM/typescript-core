@@ -4,7 +4,7 @@ import {
 } from "./identityDescription.ts";
 import { assertTypeMatchesZodSchema } from "../test/utils.ts";
 
-Deno.test("type BlahidentityDescription is accurate", () => {
+Deno.test("type BlahIdentityDescription is accurate", () => {
   assertTypeMatchesZodSchema<BlahIdentityDescription>(
     blahIdentityDescriptionSchema,
   );

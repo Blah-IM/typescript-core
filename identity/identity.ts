@@ -44,7 +44,7 @@ export class BlahIdentity {
     return this.internalActKeys;
   }
 
-  static async fromidentityDescription(
+  static async fromIdentityDescription(
     identityDesc: unknown,
     idKeyPair?: BlahKeyPair,
     actingKeyPair?: BlahKeyPair,
@@ -110,7 +110,7 @@ export class BlahIdentity {
     return new BlahIdentity(idKeyPair, [actKey], profileRecord, true);
   }
 
-  generateidentityDescription(): BlahIdentityDescription {
+  generateIdentityDescription(): BlahIdentityDescription {
     return blahIdentityDescriptionSchema.parse(
       {
         id_key: this.idPublicKey.id,

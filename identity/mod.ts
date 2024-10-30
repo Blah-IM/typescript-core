@@ -11,11 +11,11 @@ export { type BlahProfile, blahProfileSchema };
 
 import {
   type BlahIdentityDescription,
-  blahIdentityDescriptionSchema as internalBlahidentityDescriptionSchema,
+  blahIdentityDescriptionSchema as internalBlahIdentityDescriptionSchema,
 } from "./identityDescription.ts";
-const blahidentityDescriptionSchema: z.ZodType<BlahIdentityDescription> =
-  internalBlahidentityDescriptionSchema;
-export { type BlahIdentityDescription, blahidentityDescriptionSchema };
+const blahIdentityDescriptionSchema: z.ZodType<BlahIdentityDescription> =
+  internalBlahIdentityDescriptionSchema;
+export { type BlahIdentityDescription, blahIdentityDescriptionSchema };
 
 import {
   type BlahActKeyRecord,

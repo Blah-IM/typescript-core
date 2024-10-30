@@ -23,7 +23,7 @@ Deno.test("create identity", async () => {
 });
 
 Deno.test("generate identity description", () => {
-  identityDesc = identity.generateidentityDescription();
+  identityDesc = identity.generateIdentityDescription();
 });
 
 Deno.test("created identity act key signed correctly", async () => {
@@ -47,7 +47,7 @@ Deno.test("created identity profile signed correctly", async () => {
 });
 
 Deno.test("parse identity description", async () => {
-  identityFromFile = await BlahIdentity.fromidentityDescription(identityDesc);
+  identityFromFile = await BlahIdentity.fromIdentityDescription(identityDesc);
 });
 
 Deno.test("identity description profile sigs are properly verfied", async () => {
@@ -56,7 +56,7 @@ Deno.test("identity description profile sigs are properly verfied", async () => 
     profile: { ...identityDesc.profile, sig: "_ obviously not a valid sig _" },
   };
   const identityWithProfileInvalidProfileSig = await BlahIdentity
-    .fromidentityDescription(
+    .fromIdentityDescription(
       identityDescWithProfileInvalidProfileSig,
     );
   expect(identityWithProfileInvalidProfileSig.profileSigValid).toBe(false);
@@ -73,7 +73,7 @@ Deno.test("identity description act key sigs are properly verfied", async () => 
     ],
   };
   const identityWithActKeyInvalidActKeySig = await BlahIdentity
-    .fromidentityDescription(
+    .fromIdentityDescription(
       identityDescWithActKeyInvalidActKeySig,
     );
   expect(identityWithActKeyInvalidActKeySig.actKeys[0].isSigValid).toBe(false);
@@ -82,7 +82,7 @@ Deno.test("identity description act key sigs are properly verfied", async () => 
 Deno.test("add a second act key", async () => {
   const actKeyPair2 = await BlahKeyPair.generate();
   await identity.addActKey(actKeyPair2, { comment: "test" });
-  identityDesc = identity.generateidentityDescription();
+  identityDesc = identity.generateIdentityDescription();
 
   const record = await identity.idPublicKey.verifyPayload(
     identityDesc.act_keys[1],
@@ -96,7 +96,7 @@ Deno.test("add a second act key", async () => {
 
 Deno.test("update first act key", async () => {
   await identity.updateActKey(actKeyPair.id, { comment: "test2" });
-  identityDesc = identity.generateidentityDescription();
+  identityDesc = identity.generateIdentityDescription();
 
   const record = await identity.idPublicKey.verifyPayload(
     identityDesc.act_keys[0],
@@ -120,7 +120,7 @@ Deno.test("update profile", async () => {
   };
 
   await identity.updateProfile(newProfile);
-  identityDesc = identity.generateidentityDescription();
+  identityDesc = identity.generateIdentityDescription();
 
   expect(identityDesc.profile.signee.payload).toEqual(newProfile);
 });
