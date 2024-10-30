@@ -76,7 +76,7 @@ Deno.test("identity file act key sigs are properly verfied", async () => {
     .fromIdentityFile(
       identityFileWithActKeyInvalidActKeySig,
     );
-  expect(identityWithActKeyInvalidActKeySig.actKeys[0].sigValid).toBe(false);
+  expect(identityWithActKeyInvalidActKeySig.actKeys[0].isSigValid).toBe(false);
 });
 
 Deno.test("add a second act key", async () => {
@@ -103,6 +103,12 @@ Deno.test("update first act key", async () => {
   );
 
   expect(record.comment).toBe("test2");
+});
+
+Deno.test("act key properly expires", async () => {
+  expect(identity.actKeys[0].isExpired).toBe(false);
+  await identity.updateActKey(actKeyPair.id, { expiresAt: new Date(10000) });
+  expect(identity.actKeys[0].isExpired).toBe(true);
 });
 
 Deno.test("update profile", async () => {

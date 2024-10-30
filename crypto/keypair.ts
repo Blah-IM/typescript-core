@@ -42,6 +42,10 @@ export class BlahKeyPair {
     this.internalPrivateKey = privateKey;
   }
 
+  async verifyPayload<P>(signedPayload: BlahSignedPayload<P>): Promise<P> {
+    return await this.internalPublicKey.verifyPayload(signedPayload);
+  }
+
   static async generate(extractable: boolean = true): Promise<BlahKeyPair> {
     const { publicKey, privateKey } = await crypto.subtle.generateKey(
       "Ed25519",
