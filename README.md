@@ -18,4 +18,6 @@ deno add jsr:@blah/core
 A symbol API document is available on JSR: https://jsr.io/@blah/core/doc
 
 ## License
-This project is licensed under GNU General Public License v3.0. See [LICENSE](LICENSE) for more details.
+
+This project is licensed under GNU General Public License v3.0. See
+[LICENSE](LICENSE) for more details.

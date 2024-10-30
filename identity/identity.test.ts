@@ -1,7 +1,7 @@
 import { expect } from "@std/expect";
 import { BlahKeyPair } from "../crypto/mod.ts";
 import { BlahIdentity } from "./identity.ts";
-import type { BlahIdentityFile, BlahProfile } from "./mod.ts";
+import type { BlahIdentityDescription, BlahProfile } from "./mod.ts";
 
 let idKeyPair: BlahKeyPair;
 let actKeyPair: BlahKeyPair;
@@ -13,7 +13,7 @@ const profile: BlahProfile = {
 };
 
 let identity: BlahIdentity;
-let identityFile: BlahIdentityFile;
+let identityDesc: BlahIdentityDescription;
 let identityFromFile: BlahIdentity;
 
 Deno.test("create identity", async () => {
@@ -22,13 +22,13 @@ Deno.test("create identity", async () => {
   identity = await BlahIdentity.create(idKeyPair, actKeyPair, profile);
 });
 
-Deno.test("generate identity file", () => {
-  identityFile = identity.generateIdentityFile();
+Deno.test("generate identity description", () => {
+  identityDesc = identity.generateidentityDescription();
 });
 
 Deno.test("created identity act key signed correctly", async () => {
   const record = await identity.idPublicKey.verifyPayload(
-    identityFile.act_keys[0],
+    identityDesc.act_keys[0],
   );
   expect(record.typ).toBe("user_act_key");
   expect(record.expire_time).toBeGreaterThan(Date.now() / 1000);
@@ -38,7 +38,7 @@ Deno.test("created identity act key signed correctly", async () => {
 
 Deno.test("created identity profile signed correctly", async () => {
   const record = await actKeyPair.publicKey.verifyPayload(
-    identityFile.profile,
+    identityDesc.profile,
   );
   expect(record.typ).toBe("profile");
   expect(record.name).toBe("Shibo Lyu");
@@ -46,35 +46,35 @@ Deno.test("created identity profile signed correctly", async () => {
   expect(record.id_urls).toEqual([]);
 });
 
-Deno.test("parse identity file", async () => {
-  identityFromFile = await BlahIdentity.fromIdentityFile(identityFile);
+Deno.test("parse identity description", async () => {
+  identityFromFile = await BlahIdentity.fromidentityDescription(identityDesc);
 });
 
-Deno.test("identity file profile sigs are properly verfied", async () => {
-  const identityFileWithProfileInvalidProfileSig: BlahIdentityFile = {
-    ...identityFile,
-    profile: { ...identityFile.profile, sig: "_ obviously not a valid sig _" },
+Deno.test("identity description profile sigs are properly verfied", async () => {
+  const identityDescWithProfileInvalidProfileSig: BlahIdentityDescription = {
+    ...identityDesc,
+    profile: { ...identityDesc.profile, sig: "_ obviously not a valid sig _" },
   };
   const identityWithProfileInvalidProfileSig = await BlahIdentity
-    .fromIdentityFile(
-      identityFileWithProfileInvalidProfileSig,
+    .fromidentityDescription(
+      identityDescWithProfileInvalidProfileSig,
     );
   expect(identityWithProfileInvalidProfileSig.profileSigValid).toBe(false);
 });
 
-Deno.test("identity file act key sigs are properly verfied", async () => {
-  const identityFileWithActKeyInvalidActKeySig: BlahIdentityFile = {
-    ...identityFile,
+Deno.test("identity description act key sigs are properly verfied", async () => {
+  const identityDescWithActKeyInvalidActKeySig: BlahIdentityDescription = {
+    ...identityDesc,
     act_keys: [
       {
-        ...identityFile.act_keys[0],
+        ...identityDesc.act_keys[0],
         sig: "_ obviously not a valid sig _",
       },
     ],
   };
   const identityWithActKeyInvalidActKeySig = await BlahIdentity
-    .fromIdentityFile(
-      identityFileWithActKeyInvalidActKeySig,
+    .fromidentityDescription(
+      identityDescWithActKeyInvalidActKeySig,
     );
   expect(identityWithActKeyInvalidActKeySig.actKeys[0].isSigValid).toBe(false);
 });
@@ -82,10 +82,10 @@ Deno.test("identity file act key sigs are properly verfied", async () => {
 Deno.test("add a second act key", async () => {
   const actKeyPair2 = await BlahKeyPair.generate();
   await identity.addActKey(actKeyPair2, { comment: "test" });
-  identityFile = identity.generateIdentityFile();
+  identityDesc = identity.generateidentityDescription();
 
   const record = await identity.idPublicKey.verifyPayload(
-    identityFile.act_keys[1],
+    identityDesc.act_keys[1],
   );
 
   expect(record.typ).toBe("user_act_key");
@@ -96,10 +96,10 @@ Deno.test("add a second act key", async () => {
 
 Deno.test("update first act key", async () => {
   await identity.updateActKey(actKeyPair.id, { comment: "test2" });
-  identityFile = identity.generateIdentityFile();
+  identityDesc = identity.generateidentityDescription();
 
   const record = await identity.idPublicKey.verifyPayload(
-    identityFile.act_keys[0],
+    identityDesc.act_keys[0],
   );
 
   expect(record.comment).toBe("test2");
@@ -120,9 +120,9 @@ Deno.test("update profile", async () => {
   };
 
   await identity.updateProfile(newProfile);
-  identityFile = identity.generateIdentityFile();
+  identityDesc = identity.generateidentityDescription();
 
-  expect(identityFile.profile.signee.payload).toEqual(newProfile);
+  expect(identityDesc.profile.signee.payload).toEqual(newProfile);
 });
 
 Deno.test("throw when try writing to identity without id key pair", () => {

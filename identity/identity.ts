@@ -4,8 +4,8 @@ import {
   type BlahSignedPayload,
 } from "../crypto/mod.ts";
 import { type ActKeyUpdate, BlahActKey } from "./actKey.ts";
-import { blahIdentityFileSchema } from "./identityFile.ts";
-import type { BlahIdentityFile } from "./mod.ts";
+import { blahIdentityDescriptionSchema } from "./identityDescription.ts";
+import type { BlahIdentityDescription } from "./mod.ts";
 import type { BlahProfile } from "./profile.ts";
 
 export class BlahIdentity {
@@ -44,22 +44,24 @@ export class BlahIdentity {
     return this.internalActKeys;
   }
 
-  static async fromIdentityFile(
-    identityFile: unknown,
+  static async fromidentityDescription(
+    identityDesc: unknown,
     idKeyPair?: BlahKeyPair,
     actingKeyPair?: BlahKeyPair,
   ): Promise<BlahIdentity> {
-    let identityFileJson = identityFile;
-    if (typeof identityFile === "string") {
-      identityFileJson = JSON.parse(identityFile);
+    let identityDescJson = identityDesc;
+    if (typeof identityDesc === "string") {
+      identityDescJson = JSON.parse(identityDesc);
     }
-    const { id_key, act_keys, profile } = blahIdentityFileSchema.parse(
-      identityFileJson,
+    const { id_key, act_keys, profile } = blahIdentityDescriptionSchema.parse(
+      identityDescJson,
     );
 
     const idKey = idKeyPair ?? await BlahPublicKey.fromID(id_key);
     if (idKey.id !== id_key) {
-      throw new Error("ID key pair does not match ID key in identity file.");
+      throw new Error(
+        "ID key pair does not match ID key in identity description.",
+      );
     }
     const idKeyPublic = idKey instanceof BlahKeyPair ? idKey.publicKey : idKey;
 
@@ -108,13 +110,13 @@ export class BlahIdentity {
     return new BlahIdentity(idKeyPair, [actKey], profileRecord, true);
   }
 
-  generateIdentityFile(): BlahIdentityFile {
-    return blahIdentityFileSchema.parse(
+  generateidentityDescription(): BlahIdentityDescription {
+    return blahIdentityDescriptionSchema.parse(
       {
         id_key: this.idPublicKey.id,
         act_keys: this.internalActKeys.map((k) => k.toSignedRecord()),
         profile: this.rawProfile,
-      } satisfies BlahIdentityFile,
+      } satisfies BlahIdentityDescription,
     );
   }
 

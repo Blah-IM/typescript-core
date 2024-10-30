@@ -10,12 +10,12 @@ const blahProfileSchema: z.ZodType<BlahProfile> = internalBlahProfileSchema;
 export { type BlahProfile, blahProfileSchema };
 
 import {
-  type BlahIdentityFile,
-  blahIdentityFileSchema as internalBlahIdentityFileSchema,
-} from "./identityFile.ts";
-const blahIdentityFileSchema: z.ZodType<BlahIdentityFile> =
-  internalBlahIdentityFileSchema;
-export { type BlahIdentityFile, blahIdentityFileSchema };
+  type BlahIdentityDescription,
+  blahIdentityDescriptionSchema as internalBlahidentityDescriptionSchema,
+} from "./identityDescription.ts";
+const blahidentityDescriptionSchema: z.ZodType<BlahIdentityDescription> =
+  internalBlahidentityDescriptionSchema;
+export { type BlahIdentityDescription, blahidentityDescriptionSchema };
 
 import {
   type BlahActKeyRecord,

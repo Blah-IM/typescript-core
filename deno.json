@@ -23,5 +23,8 @@
   },
   "lint": {
     "exclude": ["npm/"]
+  },
+  "fmt": {
+    "exclude": ["npm/"]
   }
 }
