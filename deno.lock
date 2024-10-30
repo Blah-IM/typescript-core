@@ -11,7 +11,7 @@
     "jsr:@std/assert@^1.0.6": "1.0.6",
     "jsr:@std/bytes@0.223": "0.223.0",
     "jsr:@std/data-structures@^1.0.4": "1.0.4",
-    "jsr:@std/expect@^1.0.5": "1.0.5",
+    "jsr:@std/expect@^1.0.6": "1.0.6",
     "jsr:@std/fmt@0.223": "0.223.0",
     "jsr:@std/fmt@1": "1.0.2",
     "jsr:@std/fs@0.223": "0.223.0",
@@ -91,8 +91,8 @@
         "jsr:@std/internal@^1.0.3"
       ]
     },
-    "@std/expect@1.0.5": {
-      "integrity": "8c7ac797e2ffe57becc6399c0f2fd06230cb9ef124d45229c6e592c563824af1",
+    "@std/expect@1.0.6": {
+      "integrity": "dffba969ca5ea6d7c39338d4985c9af2bfa6e080c710cc2b77756dd7657c369c",
       "dependencies": [
         "jsr:@std/assert@^1.0.6",
         "jsr:@std/internal@^1.0.4"
@@ -203,7 +203,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@deno/dnt@~0.41.3",
-      "jsr:@std/expect@^1.0.5",
+      "jsr:@std/expect@^1.0.6",
       "jsr:@std/testing@^1.0.3",
       "npm:zod@^3.23.8"
     ]
