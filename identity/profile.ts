@@ -3,7 +3,7 @@ import z from "zod";
 export const blahProfileSchema = z.object({
   typ: z.literal("profile"),
   preferred_chat_server_urls: z.array(z.string().url()),
-  id_urls: z.array(z.string().url()),
+  id_urls: z.array(z.string().url()).min(1),
   name: z.string(),
   bio: z.string().optional(),
 });
