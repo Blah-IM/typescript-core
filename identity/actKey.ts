@@ -98,6 +98,10 @@ export class BlahActKey {
     );
   }
 
+  get expiresAt(): Date {
+    return this.internalExpiresAt;
+  }
+
   get isExpired(): boolean {
     return new Date() > this.internalExpiresAt;
   }
