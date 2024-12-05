@@ -6,7 +6,7 @@ import {
 import { type ActKeyUpdate, BlahActKey } from "./actKey.ts";
 import { blahIdentityDescriptionSchema } from "./identityDescription.ts";
 import type { BlahIdentityDescription } from "./mod.ts";
-import type { BlahProfile } from "./profile.ts";
+import { type BlahProfile, blahProfileSchema } from "./profile.ts";
 
 export class BlahIdentity {
   private internalIdKey: BlahPublicKey | BlahKeyPair;
@@ -105,7 +105,8 @@ export class BlahIdentity {
       firstActKeyConfig,
     );
 
-    const profileRecord = await firstActKey.signPayload(profile);
+    const parsedProfile = blahProfileSchema.parse(profile);
+    const profileRecord = await firstActKey.signPayload(parsedProfile);
 
     return new BlahIdentity(idKeyPair, [actKey], profileRecord, true);
   }
