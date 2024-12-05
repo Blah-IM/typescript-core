@@ -9,7 +9,7 @@ const profile: BlahProfile = {
   typ: "profile",
   name: "Shibo Lyu",
   preferred_chat_server_urls: [],
-  id_urls: [],
+  id_urls: ["https://localhost"],
 };
 
 let identity: BlahIdentity;
@@ -43,7 +43,7 @@ Deno.test("created identity profile signed correctly", async () => {
   expect(record.typ).toBe("profile");
   expect(record.name).toBe("Shibo Lyu");
   expect(record.preferred_chat_server_urls).toEqual([]);
-  expect(record.id_urls).toEqual([]);
+  expect(record.id_urls).toEqual(["https://localhost"]);
 });
 
 Deno.test("parse identity description", async () => {
