@@ -7,6 +7,7 @@ await build({
   entryPoints: [
     { name: "./crypto", path: "crypto/mod.ts" },
     { name: "./identity", path: "identity/mod.ts" },
+    { name: "./richText", path: "richText/mod.ts" },
   ],
   outDir: "./npm",
   importMap: "deno.json",

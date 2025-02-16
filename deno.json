@@ -15,7 +15,7 @@
     "build:npm": "deno run -A ./scripts/build_npm.ts"
   },
   "publish": {
-    "include": ["LICENSE", "README.md", "crypto", "identity"],
+    "include": ["LICENSE", "README.md", "crypto", "identity", "richText"],
     "exclude": ["**/*.test.ts"]
   },
   "test": {
