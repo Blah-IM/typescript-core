@@ -7,9 +7,9 @@
   },
   "imports": {
     "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-    "@std/expect": "jsr:@std/expect@^1.0.8",
-    "@std/testing": "jsr:@std/testing@^1.0.5",
-    "zod": "npm:zod@^3.23.8"
+    "@std/expect": "jsr:@std/expect@^1.0.13",
+    "@std/testing": "jsr:@std/testing@^1.0.9",
+    "zod": "npm:zod@^3.24.2"
   },
   "tasks": {
     "build:npm": "deno run -A ./scripts/build_npm.ts"
