@@ -7,6 +7,7 @@ export const blahRichTextSpanAttributesSchema = z.object({
   s: z.boolean().default(false),
   m: z.boolean().default(false),
   tag: z.boolean().default(false),
+  spoiler: z.boolean().default(false),
   link: z.string().url().optional(),
 });
 
@@ -17,6 +18,7 @@ export type BlahRichTextSpanAttributes = {
   s?: boolean;
   m?: boolean;
   tag?: boolean;
+  spoiler?: boolean;
   link?: string | undefined;
 };
 
