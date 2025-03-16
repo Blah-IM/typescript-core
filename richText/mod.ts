@@ -31,3 +31,5 @@ import {
 } from "./richText.ts";
 const blahRichTextSchema: z.ZodType<BlahRichText> = internalBlahRichTextSchema;
 export { type BlahRichText, blahRichTextSchema };
+
+export * from "./toPlainText.ts";
