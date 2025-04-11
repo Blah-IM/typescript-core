@@ -3,7 +3,11 @@ import { hexToBuf } from "./mod.ts";
 import { pbkdf2Key } from "./pbkdf2.ts";
 import { BlahPublicKey } from "./publicKey.ts";
 import type { BlahPayloadSignee, BlahSignedPayload } from "./signedPayload.ts";
-import { bufToHex } from "./utils.ts";
+import {
+  bufToHex,
+  ed25519PKCS8ToRawPrivateKey,
+  ed25519RawPrivateKeyToPKCS8,
+} from "./utils.ts";
 
 export type EncodedBlahKeyPair =
   & {
@@ -72,14 +76,20 @@ export class BlahKeyPair {
       }
 
       const derviedKey = await pbkdf2Key(password, encoded.salt);
-      const privateKey = await crypto.subtle.unwrapKey(
-        "pkcs8",
-        hexToBuf(encoded.passwordProtectedPrivateKey),
-        derviedKey,
+      const encryptedKeyData = hexToBuf(encoded.passwordProtectedPrivateKey);
+      const decryptedKeyData = await crypto.subtle.decrypt(
         {
           name: "AES-GCM",
           iv: hexToBuf(encoded.iv),
         },
+        derviedKey,
+        encryptedKeyData,
+      );
+      const pkcs8Bytes = ed25519RawPrivateKeyToPKCS8(decryptedKeyData);
+
+      const privateKey = await crypto.subtle.importKey(
+        "pkcs8",
+        pkcs8Bytes,
         { name: "Ed25519" },
         true,
         ["sign"],
@@ -114,14 +124,20 @@ export class BlahKeyPair {
       const iv = bufToHex(ivBuf);
 
       const derviedKey = await pbkdf2Key(password, saltBuf);
-      const wrappedPrivateKey = await crypto.subtle.wrapKey(
+
+      const pkcs8Bytes = await crypto.subtle.exportKey(
         "pkcs8",
         this.internalPrivateKey,
-        derviedKey,
+      );
+      const rawPrivateKeyBytes = ed25519PKCS8ToRawPrivateKey(pkcs8Bytes);
+
+      const wrappedPrivateKey = await crypto.subtle.encrypt(
         {
           name: "AES-GCM",
           iv: ivBuf,
         },
+        derviedKey,
+        rawPrivateKeyBytes,
       );
 
       return {

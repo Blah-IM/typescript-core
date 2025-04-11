@@ -22,7 +22,7 @@ export async function pbkdf2Key(
     passwordKey,
     { name: "AES-GCM", length: 256 },
     false,
-    ["wrapKey", "unwrapKey"],
+    ["encrypt", "decrypt"],
   );
 
   return key;
