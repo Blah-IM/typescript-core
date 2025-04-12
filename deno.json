@@ -1,6 +1,6 @@
 {
   "name": "@blah/core",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "exports": {
     "./crypto": "./crypto/mod.ts",
     "./identity": "./identity/mod.ts",
