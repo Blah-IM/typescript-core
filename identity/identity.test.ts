@@ -1,5 +1,5 @@
 import { expect } from "@std/expect";
-import { BlahKeyPair } from "../crypto/mod.ts";
+import { BlahKeyPair, type BlahSignedPayload } from "../crypto/mod.ts";
 import { BlahIdentity } from "./identity.ts";
 import type { BlahIdentityDescription, BlahProfile } from "./mod.ts";
 
@@ -48,6 +48,9 @@ Deno.test("created identity profile signed correctly", async () => {
 
 Deno.test("parse identity description", async () => {
   identityFromFile = await BlahIdentity.fromIdentityDescription(identityDesc);
+  expect(identityFromFile.idPublicKey.id).toBe(idKeyPair.id);
+  expect(identityFromFile.actKeys[0].publicKey.id).toBe(actKeyPair.id);
+  expect(identityFromFile.profileSigValid).toBe(true);
 });
 
 Deno.test("identity description profile sigs are properly verfied", async () => {
@@ -60,6 +63,19 @@ Deno.test("identity description profile sigs are properly verfied", async () => 
       identityDescWithProfileInvalidProfileSig,
     );
   expect(identityWithProfileInvalidProfileSig.profileSigValid).toBe(false);
+});
+
+Deno.test("identity description profile must be signed with correct id_key", async () => {
+  const rawProfile: BlahProfile = identityDesc.profile.signee.payload;
+  const profileSignedWithActKeyAsIdKey: BlahSignedPayload<BlahProfile> =
+    await actKeyPair.signPayload(rawProfile);
+  const identityDescWithWrongIdKey: BlahIdentityDescription = {
+    ...identityDesc,
+    profile: profileSignedWithActKeyAsIdKey,
+  };
+  const identityWithWrongIdKey = await BlahIdentity
+    .fromIdentityDescription(identityDescWithWrongIdKey);
+  expect(identityWithWrongIdKey.profileSigValid).toBe(false);
 });
 
 Deno.test("identity description act key sigs are properly verfied", async () => {

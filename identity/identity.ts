@@ -81,7 +81,7 @@ export class BlahIdentity {
     );
 
     let profileSigValid = false;
-    if (profileSigningKey) {
+    if (profileSigningKey && rawProfile.signee.id_key === idKey.id) {
       try {
         await profileSigningKey.verifyPayload(rawProfile);
         profileSigValid = true;
@@ -95,18 +95,18 @@ export class BlahIdentity {
 
   static async create(
     idKeyPair: BlahKeyPair,
-    firstActKey: BlahKeyPair,
+    firstActKeyPair: BlahKeyPair,
     profile: BlahProfile,
     firstActKeyConfig?: ActKeyUpdate,
   ): Promise<BlahIdentity> {
     const actKey = await BlahActKey.create(
-      firstActKey,
+      firstActKeyPair,
       idKeyPair,
       firstActKeyConfig,
     );
 
     const parsedProfile = blahProfileSchema.parse(profile);
-    const profileRecord = await firstActKey.signPayload(parsedProfile);
+    const profileRecord = await actKey.signPayload(parsedProfile);
 
     return new BlahIdentity(idKeyPair, [actKey], profileRecord, true);
   }
