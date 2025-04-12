@@ -15,9 +15,9 @@ export type EncodedBlahKeyPair =
     id: string;
   }
   & ({
-    privateKey: JsonWebKey;
+    private: string;
   } | {
-    passwordProtectedPrivateKey: string;
+    password_protected_private: string;
     iv: string;
     salt: string;
   });
@@ -70,13 +70,13 @@ export class BlahKeyPair {
 
     const publicIdentity = await BlahPublicKey.fromID(encoded.id);
 
-    if ("passwordProtectedPrivateKey" in encoded) {
+    if ("password_protected_private" in encoded) {
       if (!password) {
         throw new Error("Private key is password-protected.");
       }
 
       const derviedKey = await pbkdf2Key(password, encoded.salt);
-      const encryptedKeyData = hexToBuf(encoded.passwordProtectedPrivateKey);
+      const encryptedKeyData = hexToBuf(encoded.password_protected_private);
       const decryptedKeyData = await crypto.subtle.decrypt(
         {
           name: "AES-GCM",
@@ -97,9 +97,10 @@ export class BlahKeyPair {
 
       return new BlahKeyPair(publicIdentity, privateKey);
     } else {
+      const pkcs8Bytes = ed25519RawPrivateKeyToPKCS8(hexToBuf(encoded.private));
       const privateKey = await crypto.subtle.importKey(
-        "jwk",
-        encoded.privateKey,
+        "pkcs8",
+        pkcs8Bytes,
         { name: "Ed25519" },
         true,
         ["sign"],
@@ -143,18 +144,21 @@ export class BlahKeyPair {
       return {
         v: "0",
         id: this.internalPublicKey.id,
-        passwordProtectedPrivateKey: bufToHex(wrappedPrivateKey),
+        password_protected_private: bufToHex(wrappedPrivateKey),
         iv,
         salt,
       };
     } else {
+      const pkcs8Bytes = await crypto.subtle.exportKey(
+        "pkcs8",
+        this.internalPrivateKey,
+      );
+      const rawPrivateKeyBytes = ed25519PKCS8ToRawPrivateKey(pkcs8Bytes);
+      const rawPrivateKey = bufToHex(rawPrivateKeyBytes);
       return {
         v: "0",
         id: this.internalPublicKey.id,
-        privateKey: await crypto.subtle.exportKey(
-          "jwk",
-          this.internalPrivateKey,
-        ),
+        private: rawPrivateKey,
       };
     }
   }
