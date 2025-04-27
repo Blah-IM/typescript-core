@@ -8,6 +8,7 @@ let actKeyPair: BlahKeyPair;
 const profile: BlahProfile = {
   typ: "profile",
   name: "Shibo Lyu",
+  bio: "Test bio",
   preferred_chat_server_urls: [],
   id_urls: ["https://localhost"],
 };
@@ -42,6 +43,7 @@ Deno.test("created identity profile signed correctly", async () => {
   );
   expect(record.typ).toBe("profile");
   expect(record.name).toBe("Shibo Lyu");
+  expect(record.bio).toBe("Test bio");
   expect(record.preferred_chat_server_urls).toEqual([]);
   expect(record.id_urls).toEqual(["https://localhost"]);
 });
