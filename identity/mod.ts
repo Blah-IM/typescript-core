@@ -5,17 +5,25 @@ export * from "./identity.ts";
 import {
   type BlahProfile,
   blahProfileSchema as internalBlahProfileSchema,
+  validateIDURLFormat,
 } from "./profile.ts";
 const blahProfileSchema: z.ZodType<BlahProfile> = internalBlahProfileSchema;
-export { type BlahProfile, blahProfileSchema };
+export { type BlahProfile, blahProfileSchema, validateIDURLFormat };
 
 import {
   type BlahIdentityDescription,
   blahIdentityDescriptionSchema as internalBlahIdentityDescriptionSchema,
+  getIdentityDescriptionFileURL,
+  identityDescriptionFilePath,
 } from "./identityDescription.ts";
 const blahIdentityDescriptionSchema: z.ZodType<BlahIdentityDescription> =
   internalBlahIdentityDescriptionSchema;
-export { type BlahIdentityDescription, blahIdentityDescriptionSchema };
+export {
+  type BlahIdentityDescription,
+  blahIdentityDescriptionSchema,
+  getIdentityDescriptionFileURL,
+  identityDescriptionFilePath,
+};
 
 import {
   type BlahActKeyRecord,
