@@ -19,5 +19,5 @@ A symbol API document is available on JSR: https://jsr.io/@blah/core/doc
 
 ## License
 
-This project is licensed under GNU General Public License v3.0. See
+This project is now licensed under MIT License. Note that this project was licensed under GNU General Public License v3.0 before version 0.7.0. See
 [LICENSE](LICENSE) for more details.
