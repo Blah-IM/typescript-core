@@ -20,13 +20,17 @@ export type BlahProfile = {
 
 /** Validate the format of an ID URL. */
 export function validateIDURLFormat(url: string): boolean {
-  const idURL = URL.parse(url);
-  return !!idURL &&
-    idURL.protocol === "https:" &&
-    idURL.pathname === "/" &&
-    !url.endsWith("/") &&
-    !idURL.search &&
-    !idURL.hash &&
-    !idURL.username &&
-    !idURL.password;
+  try {
+    const idURL = new URL(url);
+    return !!idURL &&
+      idURL.protocol === "https:" &&
+      idURL.pathname === "/" &&
+      !url.endsWith("/") &&
+      !idURL.search &&
+      !idURL.hash &&
+      !idURL.username &&
+      !idURL.password;
+  } catch {
+    return false;
+  }
 }
