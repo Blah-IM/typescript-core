@@ -40,6 +40,7 @@ Deno.test("created identity act key signed correctly", async () => {
 Deno.test("created identity profile signed correctly", async () => {
   const record = await actKeyPair.publicKey.verifyPayload(
     identityDesc.profile,
+    { identityKeyId: identityDesc.id_key },
   );
   expect(record.typ).toBe("profile");
   expect(record.name).toBe("Shibo Lyu");

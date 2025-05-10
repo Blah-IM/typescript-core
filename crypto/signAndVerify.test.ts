@@ -1,27 +1,10 @@
 import { expect } from "@std/expect";
-import { BlahKeyPair, BlahPublicKey } from "./mod.ts";
-import z from "zod";
+import { BlahKeyPair } from "./keypair.ts";
+import { z } from "zod";
+import { BlahPublicKey } from "./publicKey.ts";
+import type { SignOrVerifyOptions } from "./signAndVerify.ts";
 
-let keypair: BlahKeyPair;
-
-Deno.test("generate keypair", async () => {
-  keypair = await BlahKeyPair.generate();
-});
-
-Deno.test("encode & decode keypair", async () => {
-  const encoded = await keypair.encode();
-  const decoded = await BlahKeyPair.fromEncoded(encoded);
-
-  expect(decoded.id).toBe(keypair.id);
-});
-
-Deno.test("encode & decode keypair w/ password", async () => {
-  const password = "password";
-  const encoded = await keypair.encode(password);
-  const decoded = await BlahKeyPair.fromEncoded(encoded, password);
-
-  expect(decoded.id).toBe(keypair.id);
-});
+const keypair = await BlahKeyPair.generate();
 
 Deno.test("sign & verify payload", async () => {
   const payload = { foo: "bar", baz: 123 };
@@ -31,6 +14,30 @@ Deno.test("sign & verify payload", async () => {
   );
 
   expect(verifiedPayload).toEqual(payload);
+});
+
+Deno.test("sign and verify with POW", async () => {
+  const payload = { foo: "bar-pow", baz: 123 };
+  const options: SignOrVerifyOptions = { powDifficulty: 1 };
+  const signedPayload = await keypair.signPayload(payload, options);
+  const verifiedPayload = await keypair.publicKey.verifyPayload(
+    signedPayload,
+    options,
+  );
+
+  expect(verifiedPayload).toEqual(payload);
+});
+
+Deno.test("sign and verify with unmet POW", async () => {
+  const payload = { foo: "bar", baz: 123 };
+  const signedPayload = await keypair.signPayload(payload, {
+    powDifficulty: 1,
+  });
+
+  await expect(keypair.publicKey.verifyPayload(
+    signedPayload,
+    { powDifficulty: 6 },
+  )).rejects.toMatch(/proof-of-work/);
 });
 
 Deno.test("parse and verify payload", async () => {
@@ -58,7 +65,7 @@ Deno.test("parse and verify corrupted payload", async () => {
   const payload = { foo: "bar", baz: 123, qux: "quux" };
   const signedPayload = await keypair.signPayload(payload);
 
-  expect(BlahPublicKey
+  await expect(BlahPublicKey
     .parseAndVerifyPayload(
       payloadSchema,
       signedPayload,

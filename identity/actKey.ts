@@ -2,6 +2,7 @@ import z from "zod";
 import { BlahPublicKey } from "../crypto/publicKey.ts";
 import { BlahKeyPair } from "../crypto/keypair.ts";
 import type { BlahSignedPayload } from "../crypto/signedPayload.ts";
+import type { SignOrVerifyOptions } from "../crypto/signAndVerify.ts";
 
 export const blahActKeyRecordSchema = z.object({
   typ: z.literal("user_act_key"),
@@ -126,29 +127,44 @@ export class BlahActKey {
     }
   }
 
+  /**
+   * Sign a payload with this act key.
+   *
+   * This method is a convenience method that calls {@link signPayload} with this act key.
+   * Correct identity key ID is automatically set.
+   *
+   * @param payload The payload to sign.
+   * @param options Options for signing.
+   */
   async signPayload<P>(
     payload: P,
-    date: Date = new Date(),
+    options: Omit<SignOrVerifyOptions, "identityKeyId"> = {},
   ): Promise<BlahSignedPayload<P>> {
     if (!this.canSign) throw new Error("Cannot sign without a private key");
 
     return await (this.internalKey as BlahKeyPair).signPayload(
       payload,
-      date,
-      this.internalIdKeyPublic.id,
+      { ...options, identityKeyId: this.internalIdKeyPublic.id },
     );
   }
 
+  /**
+   * Verify a signed payload with this act key.
+   *
+   * This method is a convenience method that calls {@link verifyPayload} with this act key.
+   * But this method also checks if the key was expired at the time of signing.
+   *
+   * @param payload The signed payload to verify.
+   */
   async verifyPayload<P>(
     payload: BlahSignedPayload<P>,
   ): Promise<P> {
-    if (payload.signee.id_key !== this.internalIdKeyPublic.id) {
-      throw new Error("Payload signed with a different ID key");
-    }
     if (new Date(payload.signee.timestamp * 1000) > this.internalExpiresAt) {
       throw new Error("Key was expired at the time of signing");
     }
-    return await this.internalKey.verifyPayload(payload);
+    return await this.internalKey.verifyPayload(payload, {
+      identityKeyId: this.internalIdKeyPublic.id,
+    });
   }
 
   async update(update: ActKeyUpdate, idKeyPair: BlahKeyPair): Promise<void> {

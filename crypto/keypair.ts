@@ -1,8 +1,8 @@
-import canonicalize from "./canonicalize.ts";
 import { hexToBuf } from "./mod.ts";
 import { pbkdf2Key } from "./pbkdf2.ts";
 import { BlahPublicKey } from "./publicKey.ts";
-import type { BlahPayloadSignee, BlahSignedPayload } from "./signedPayload.ts";
+import { type SignOptions, signPayload } from "./signAndVerify.ts";
+import type { BlahSignedPayload } from "./signedPayload.ts";
 import {
   bufToHex,
   ed25519PKCS8ToRawPrivateKey,
@@ -163,34 +163,15 @@ export class BlahKeyPair {
     }
   }
 
-  async signPayload<P>(
+  /**
+   * Sign a payload with the private key.
+   *
+   * This is a convenience method of {@link signPayload}.
+   */
+  signPayload<P>(
     payload: P,
-    date: Date = new Date(),
-    identityKeyId?: string,
+    options: SignOptions = {},
   ): Promise<BlahSignedPayload<P>> {
-    const nonceBuf = new Uint32Array(1);
-    crypto.getRandomValues(nonceBuf);
-
-    const timestamp = Math.floor(date.getTime() / 1000);
-
-    const signee: BlahPayloadSignee<P> = {
-      nonce: nonceBuf[0],
-      payload,
-      timestamp,
-      id_key: identityKeyId ?? this.id,
-      act_key: this.id,
-    };
-
-    const signeeBytes = new TextEncoder().encode(canonicalize(signee));
-
-    const rawSig = await crypto.subtle.sign(
-      "Ed25519",
-      this.internalPrivateKey,
-      signeeBytes,
-    );
-    return {
-      sig: bufToHex(rawSig),
-      signee,
-    };
+    return signPayload(this, payload, options);
   }
 }
