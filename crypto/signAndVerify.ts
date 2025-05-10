@@ -55,14 +55,7 @@ async function verifyPoWIsMet(signeeBytes: Uint8Array, difficulty: number) {
   const h = new Uint8Array(await crypto.subtle.digest("SHA-256", signeeBytes));
   let passed = h[zeroBytes] < nonzeroByteMax;
   for (let j = 0; j < zeroBytes; j++) passed &&= h[j] === 0;
-  console.log(
-    `POW: ${
-      Array.from(h)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("")
-    }`,
-    `(${difficulty}): ${passed}`,
-  );
+
   return passed;
 }
 
