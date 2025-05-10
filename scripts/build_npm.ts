@@ -26,7 +26,7 @@ await build({
     name: "@blah-im/core",
     version: denoJson.version,
     description: "Core logic & types for Blah IM.",
-    license: "GPL-3.0-only",
+    license: "MIT",
     repository: {
       type: "git",
       url: "git+https://github.com/Blah-IM/typescript-core.git",
