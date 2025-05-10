@@ -1,16 +1,16 @@
 {
   "name": "@blah/core",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "exports": {
     "./crypto": "./crypto/mod.ts",
     "./identity": "./identity/mod.ts",
     "./richText": "./richText/mod.ts"
   },
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.1",
     "@std/expect": "jsr:@std/expect@^1.0.15",
     "@std/testing": "jsr:@std/testing@^1.0.11",
-    "zod": "npm:zod@^3.24.3"
+    "zod": "npm:zod@^3.24.4"
   },
   "tasks": {
     "build:npm": "deno run -A ./scripts/build_npm.ts"
