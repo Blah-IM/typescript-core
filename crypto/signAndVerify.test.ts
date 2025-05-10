@@ -4,9 +4,11 @@ import { z } from "zod";
 import { BlahPublicKey } from "./publicKey.ts";
 import type { SignOrVerifyOptions } from "./signAndVerify.ts";
 
-const keypair = await BlahKeyPair.generate();
+let keypair: BlahKeyPair;
 
 Deno.test("sign & verify payload", async () => {
+  keypair = await BlahKeyPair.generate();
+
   const payload = { foo: "bar", baz: 123 };
   const signedPayload = await keypair.signPayload(payload);
   const verifiedPayload = await keypair.publicKey.verifyPayload(
