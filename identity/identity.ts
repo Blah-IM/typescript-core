@@ -2,12 +2,23 @@ import {
   BlahKeyPair,
   BlahPublicKey,
   type BlahSignedPayload,
+  type SignOrVerifyOptions,
 } from "../crypto/mod.ts";
 import { type ActKeyUpdate, BlahActKey } from "./actKey.ts";
 import { blahIdentityDescriptionSchema } from "./identityDescription.ts";
 import type { BlahIdentityDescription } from "./mod.ts";
 import { type BlahProfile, blahProfileSchema } from "./profile.ts";
 
+/**
+ * Object representing an identity.
+ *
+ * This object manages the identity's ID key and acting keys, as well as the profile.
+ *
+ * There are 3 major configurations this object can be in:
+ * - *Full Access*: Private key of ID key is available. All methods are available.
+ * - *Limited Access*: Private key of (at least) one act key is avilable. Key management methods are unavailable.
+ * - *Read Only*: No private keys are available. Only inspection & integrity verification are available.
+ */
 export class BlahIdentity {
   private internalIdKey: BlahPublicKey | BlahKeyPair;
   private internalActKeys: BlahActKey[];
@@ -42,6 +53,10 @@ export class BlahIdentity {
 
   get actKeys(): BlahActKey[] {
     return this.internalActKeys;
+  }
+
+  get actingKey(): BlahActKey | undefined {
+    return this.internalActKeys.find((k) => k.canSign);
   }
 
   static async fromIdentityDescription(
@@ -142,13 +157,18 @@ export class BlahIdentity {
     await key.update(update, this.internalIdKey);
   }
 
-  async updateProfile(profile: BlahProfile) {
-    const signingActKey = this.internalActKeys.find((k) => k.canSign);
-    if (!signingActKey) {
-      throw new Error("No act key to sign profile with.");
-    }
+  /** Sign a payload with the acting key. */
+  signPayload<P>(
+    payload: P,
+    options?: Omit<SignOrVerifyOptions, "identityKeyId">,
+  ): Promise<BlahSignedPayload<P>> {
+    if (!this.actingKey) throw new Error("No act key to sign payload with.");
 
-    this.rawProfile = await signingActKey.signPayload(profile);
+    return this.actingKey.signPayload(payload, options);
+  }
+
+  async updateProfile(profile: BlahProfile) {
+    this.rawProfile = await this.signPayload(profile);
     this.internalProfileSigValid = true;
   }
 }
