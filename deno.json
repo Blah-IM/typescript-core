@@ -7,10 +7,10 @@
     "./richText": "./richText/mod.ts"
   },
   "imports": {
-    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
-    "@std/expect": "jsr:@std/expect@^1.0.15",
-    "@std/testing": "jsr:@std/testing@^1.0.11",
-    "zod": "npm:zod@^3.24.4"
+    "@deno/dnt": "jsr:@deno/dnt@^0.42.1",
+    "@std/expect": "jsr:@std/expect@^1.0.16",
+    "@std/testing": "jsr:@std/testing@^1.0.12",
+    "zod": "npm:zod@^3.25.7"
   },
   "tasks": {
     "build:npm": "deno run -A ./scripts/build_npm.ts"
