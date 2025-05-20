@@ -1,36 +1,35 @@
-name: Publish on JSR & npm
+name: Test & Publish on JSR & npm
 
 on:
-  workflow_run:
-    workflows: [Deno]
-    types: [completed]
-    branches: [main]
+  push:
+    branches:
+      - main
 jobs:
-  publish:
+  testAndPublish:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       id-token: write # The OIDC ID token is used for authentication with JSR.
     steps:
-      - name: Setup Deno
-        uses: denoland/setup-deno@v2
-        with:
-          deno-version: v2.x
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
           registry-url: "https://registry.npmjs.org"
+      - uses: pnpm/action-setup@v4
+
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Build & test npm package
-        run: deno task build:npm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build & Test
+        run: pnpm build && pnpm test
+
       - name: Publish to JSR
-        run: npx jsr publish
+        run: pnpm dlx jsr publish
       - name: Publish to npm
-        run: |
-          cd npm
-          npx is-published@0.2.0 || npm publish --provenance --access public
+        run: pnpm dlx is-published@0.2.0 || pnpm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

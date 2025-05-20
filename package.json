@@ -1,0 +1,48 @@
+{
+  "name": "@blah-im/core",
+  "version": "0.9.0",
+  "description": "Core logic & types for Blah IM.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blah-IM/typescript-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Blah-IM/typescript-core/issues"
+  },
+  "exports": {
+    "./crypto": {
+      "import": "./dist/crypto/mod.mjs",
+      "require": "./dist/crypto/mod.cjs",
+      "types": "./dist/crypto/mod.d.ts"
+    },
+    "./identity": {
+      "import": "./dist/identity/mod.mjs",
+      "require": "./dist/identity/mod.cjs",
+      "types": "./dist/identity/mod.d.ts"
+    },
+    "./richText": {
+      "import": "./dist/richText/mod.mjs",
+      "require": "./dist/richText/mod.cjs",
+      "types": "./dist/richText/mod.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "vitest --typecheck",
+    "build": "unbuild"
+  },
+  "dependencies": {
+    "zod": "^3.25.7"
+  },
+  "devDependencies": {
+    "jsr": "^0.13.4",
+    "unbuild": "^3.5.0",
+    "vitest": "^3.1.4"
+  },
+  "packageManager": "pnpm@10.11.0"
+}

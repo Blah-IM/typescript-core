@@ -1,19 +1,20 @@
+import { expect, test, expectTypeOf } from "vitest";
+
 import {
   type BlahIdentityDescription,
   blahIdentityDescriptionSchema,
   getIdentityDescriptionFileURL,
   identityDescriptionFilePath,
 } from "./identityDescription.ts";
-import { assertTypeMatchesZodSchema } from "../test/utils.ts";
-import { expect } from "@std/expect";
+import { z } from "zod";
 
-Deno.test("type BlahIdentityDescription is accurate", () => {
-  assertTypeMatchesZodSchema<BlahIdentityDescription>(
-    blahIdentityDescriptionSchema,
-  );
+test("BlahIdentityDescription typed correctly", () => {
+  expectTypeOf<
+    z.infer<typeof blahIdentityDescriptionSchema>
+  >().toEqualTypeOf<BlahIdentityDescription>();
 });
 
-Deno.test("getIdentityDescriptionFileURL", () => {
+test("getIdentityDescriptionFileURL", () => {
   expect(getIdentityDescriptionFileURL("https://lao.sb")).toBe(
     "https://lao.sb" + identityDescriptionFilePath,
   );
@@ -22,6 +23,7 @@ Deno.test("getIdentityDescriptionFileURL", () => {
     "https://test.lao.sb" + identityDescriptionFilePath,
   );
 
-  expect(() => getIdentityDescriptionFileURL("https://trailing-slash.lao.sb/"))
-    .toThrow();
+  expect(() =>
+    getIdentityDescriptionFileURL("https://trailing-slash.lao.sb/"),
+  ).toThrow();
 });

@@ -1,22 +1,25 @@
+import { expect, test, expectTypeOf } from "vitest";
+
+import z from "zod";
 import {
   type BlahProfile,
   blahProfileSchema,
   validateIDURLFormat,
 } from "./profile.ts";
-import { assertTypeMatchesZodSchema } from "../test/utils.ts";
-import { expect } from "@std/expect";
 
-Deno.test("type BlahProfile is accurate", () => {
-  assertTypeMatchesZodSchema<BlahProfile>(blahProfileSchema);
+test("BlahProfile typed correctly", () => {
+  expectTypeOf<
+    z.infer<typeof blahProfileSchema>
+  >().toEqualTypeOf<BlahProfile>();
 });
 
-Deno.test("ID URL format - valid", () => {
+test("ID URL format - valid", () => {
   expect(validateIDURLFormat("https://lao.sb")).toBe(true);
   expect(validateIDURLFormat("https://test.lao.sb")).toBe(true);
   expect(validateIDURLFormat("https://🧧.lao.sb")).toBe(true);
 });
 
-Deno.test("ID URL format - invalid", () => {
+test("ID URL format - invalid", () => {
   // Must be valid URL
   expect(validateIDURLFormat("lao.sb")).toBe(false);
   // No trailing slash

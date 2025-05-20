@@ -1,0 +1,11 @@
+{
+  "name": "@blah/core",
+  "version": "0.9.0",
+  "exports": {
+    "./crypto": "./src/crypto/mod.ts",
+    "./identity": "./src/identity/mod.ts",
+    "./richText": "./src/richText/mod.ts"
+  },
+  "include": ["LICENSE", "README.md", "src"],
+  "exclude": ["**/*.test.ts"]
+}

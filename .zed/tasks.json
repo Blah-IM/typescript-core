@@ -1,13 +1,6 @@
-// Static tasks configuration.
-//
-// Example:
 [
   {
-    "label": "Deno Test",
-    "command": "deno test -A"
-  },
-  {
-    "label": "Deno Test - Watch",
-    "command": "deno test -A --watch"
+    "label": "Test",
+    "command": "pnpm test"
   }
 ]
