@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { type BlahRichTextSpan, blahRichTextSpanSchema } from "./span.ts";
 
 export const blahRichTextSchema = z.array(blahRichTextSpanSchema);

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const blahRichTextSpanAttributesSchema = z.object({
   b: z.boolean().default(false),
@@ -8,7 +8,7 @@ export const blahRichTextSpanAttributesSchema = z.object({
   m: z.boolean().default(false),
   tag: z.boolean().default(false),
   spoiler: z.boolean().default(false),
-  link: z.string().url().optional(),
+  link: z.url().optional(),
 });
 
 export type BlahRichTextSpanAttributes = {

@@ -6,7 +6,7 @@ import {
   getIdentityDescriptionFileURL,
   identityDescriptionFilePath,
 } from "./identityDescription.ts";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 test("BlahIdentityDescription typed correctly", () => {
   expectTypeOf<

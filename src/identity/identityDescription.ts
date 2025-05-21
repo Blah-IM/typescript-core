@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 import { blahSignedPayloadSchemaOf } from "../crypto/signedPayload.ts";
 import { type BlahActKeyRecord, blahActKeyRecordSchema } from "./actKey.ts";
 import {
@@ -32,9 +32,7 @@ export const identityDescriptionFilePath = "/.well-known/blah/identity.json";
  * @returns The full URL to the identity description file.
  * @throws Error if the ID URL format is invalid.
  */
-export function getIdentityDescriptionFileURL(
-  idURL: string,
-): string {
+export function getIdentityDescriptionFileURL(idURL: string): string {
   if (!validateIDURLFormat(idURL)) throw new Error("Invalid ID URL format");
   const url = new URL(idURL);
   url.pathname = identityDescriptionFilePath;

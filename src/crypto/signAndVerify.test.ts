@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 
 import { BlahKeyPair } from "./keypair.ts";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { BlahPublicKey } from "./publicKey.ts";
 import type { SignOrVerifyOptions } from "./signAndVerify.ts";
 
