@@ -1,4 +1,4 @@
-import type z from "zod";
+import type { z } from "zod/v4";
 import {
   type BlahSignedPayload,
   blahSignedPayloadSchemaOf,
@@ -22,9 +22,7 @@ export class BlahPublicKey {
     this.name = id.slice(0, 4) + "..." + id.slice(-4);
   }
 
-  static async fromPublicKey(
-    publicKey: CryptoKey,
-  ): Promise<BlahPublicKey> {
+  static async fromPublicKey(publicKey: CryptoKey): Promise<BlahPublicKey> {
     const rawKey = await crypto.subtle.exportKey("raw", publicKey);
     const id = bufToHex(rawKey);
     return new BlahPublicKey(publicKey, id);
@@ -67,7 +65,9 @@ export class BlahPublicKey {
     options: SignOrVerifyOptions = {},
   ): Promise<{ payload: z.infer<P>; key: BlahPublicKey }> {
     const signedPayloadSchema = blahSignedPayloadSchemaOf(schema);
-    const parsed = signedPayloadSchema.parse(signedPayload) as z.infer<P>;
+    const parsed = signedPayloadSchema.parse(
+      signedPayload,
+    ) as BlahSignedPayload<z.infer<P>>;
     return await BlahPublicKey.verifyPayload(parsed, options);
   }
 

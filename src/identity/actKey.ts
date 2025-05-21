@@ -1,4 +1,4 @@
-import z from "zod";
+import { z } from "zod/v4";
 import { BlahPublicKey } from "../crypto/publicKey.ts";
 import { BlahKeyPair } from "../crypto/keypair.ts";
 import type { BlahSignedPayload } from "../crypto/signedPayload.ts";
@@ -7,7 +7,7 @@ import type { SignOrVerifyOptions } from "../crypto/signAndVerify.ts";
 export const blahActKeyRecordSchema = z.object({
   typ: z.literal("user_act_key"),
   act_key: z.string(),
-  expire_time: z.number().int(),
+  expire_time: z.int(),
   comment: z.string(),
 });
 
@@ -61,8 +61,8 @@ export class BlahActKey {
       sigValid = false;
     }
 
-    const key: BlahPublicKey | BlahKeyPair = keypair ??
-      await BlahPublicKey.fromID(record.act_key);
+    const key: BlahPublicKey | BlahKeyPair =
+      keypair ?? (await BlahPublicKey.fromID(record.act_key));
     const fullConfig: Required<ActKeyUpdate> = {
       expiresAt: new Date(record.expire_time * 1000),
       comment: record.comment,
@@ -142,10 +142,10 @@ export class BlahActKey {
   ): Promise<BlahSignedPayload<P>> {
     if (!this.canSign) throw new Error("Cannot sign without a private key");
 
-    return await (this.internalKey as BlahKeyPair).signPayload(
-      payload,
-      { ...options, identityKeyId: this.internalIdKeyPublic.id },
-    );
+    return await (this.internalKey as BlahKeyPair).signPayload(payload, {
+      ...options,
+      identityKeyId: this.internalIdKeyPublic.id,
+    });
   }
 
   /**
@@ -156,9 +156,7 @@ export class BlahActKey {
    *
    * @param payload The signed payload to verify.
    */
-  async verifyPayload<P>(
-    payload: BlahSignedPayload<P>,
-  ): Promise<P> {
+  async verifyPayload<P>(payload: BlahSignedPayload<P>): Promise<P> {
     if (new Date(payload.signee.timestamp * 1000) > this.internalExpiresAt) {
       throw new Error("Key was expired at the time of signing");
     }

@@ -1,10 +1,10 @@
-import z from "zod";
+import { z } from "zod/v4";
 
 export function blahPayloadSigneeSchemaOf<P extends z.ZodTypeAny>(schema: P) {
   return z.object({
-    nonce: z.number().int(),
+    nonce: z.int(),
     payload: schema,
-    timestamp: z.number().int(),
+    timestamp: z.int(),
     id_key: z.string(),
     act_key: z.string(),
   });
