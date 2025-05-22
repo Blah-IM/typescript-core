@@ -1,6 +1,6 @@
 {
   "name": "@blah-im/core",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Core logic & types for Blah IM.",
   "license": "MIT",
   "repository": {
