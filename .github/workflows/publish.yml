@@ -1,4 +1,4 @@
-name: Test & Publish on JSR & npm
+name: Publish on JSR & npm
 
 on:
   workflow_run:
@@ -6,7 +6,7 @@ on:
     types:
       - completed
 jobs:
-  testAndPublish:
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -26,7 +26,7 @@ jobs:
         run: pnpm install
 
       - name: Build & Test
-        run: pnpm build && pnpm test
+        run: pnpm build
 
       - name: Publish to JSR
         run: pnpm dlx jsr publish
