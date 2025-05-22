@@ -1,16 +1,13 @@
-name: Test & Publish on JSR & npm
+name: Test
 
 on:
-  workflow_run:
-    workflows: ["Test"]
-    types:
-      - completed
+  push:
+  pull_request:
 jobs:
   testAndPublish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write # The OIDC ID token is used for authentication with JSR.
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -27,10 +24,3 @@ jobs:
 
       - name: Build & Test
         run: pnpm build && pnpm test
-
-      - name: Publish to JSR
-        run: pnpm dlx jsr publish
-      - name: Publish to npm
-        run: pnpm dlx is-published@0.2.0 || pnpm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
